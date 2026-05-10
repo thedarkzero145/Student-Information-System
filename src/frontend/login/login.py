@@ -1,9 +1,13 @@
-from ttkbootstrap import Frame, Toplevel, Label, Entry, Button
+from ttkbootstrap import Frame, Toplevel, Label, Entry, Button, Checkbutton
 from tkinter import PhotoImage
+
 import os
 
+from ttkbootstrap.constants import LEFT
+
+
 # initialize login
-def open_login(window):
+def open_login_window(window):
     window = Toplevel(window)
     window.title("Login")
     window.geometry("1000x800")
@@ -13,7 +17,7 @@ def open_login(window):
     side_frame.pack_propagate(False)
     side_frame.pack(side="left", fill="y")
 
-    side_center_frame = Frame(side_frame)
+    side_center_frame = Frame(side_frame, bootstyle="dark")
     side_center_frame.pack(expand=True)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +25,8 @@ def open_login(window):
 
     bg_label_image =  Label(side_center_frame, image=bg_logo, background="#303030")
     bg_label_image.image = bg_logo
-    bg_label_image.pack()
+
+    bg_label_image.pack(expand=True)
 
 
     Label(side_center_frame,
@@ -45,7 +50,7 @@ def open_login(window):
     label = Label(center_content, text="Welcome back", font=("Segoe UI", 25, "bold"))
     label.pack()
 
-    label = Label(center_content, text="Sign in to your workspace")
+    label = Label(center_content, text="Log in to your workspace")
     label.pack()
 
     # User Label
@@ -54,7 +59,7 @@ def open_login(window):
 
     # User Input
     user_input = Entry(center_content, width=200)
-    user_input.pack(ipady=7, pady=(3, 10))
+    user_input.pack(ipady=7, pady=(5, 10))
 
     # Password Label
     password_label = Label(center_content, text="Password")
@@ -62,14 +67,18 @@ def open_login(window):
 
     # Password Input
     password_input = Entry(center_content, width=200, show="•")
-    password_input.pack(ipady=7, pady=(3, 10))
+    password_input.pack(ipady=7, pady=(5, 10))
+
+    remember_me_frame = Frame(center_content)
+    remember_me_frame.pack(anchor="w", pady=7)
+
+    remember_me_checkbox = Checkbutton(remember_me_frame)
+    remember_me_checkbox.pack(side=LEFT)
+
+    remember_me_label = Label(remember_me_frame, text="Remember me")
+    remember_me_label.pack(side=LEFT)
+
 
     button = Button(center_content, text="Login")
     button.pack(fill="x", pady=(10, 20), ipady=5)
 
-
-    label = Label(center_content, text="Don't have an account?")
-    label.pack(side="left", padx=(0, 5))
-
-    button = Button(center_content, text="Sign up")
-    button.pack(side="left")
