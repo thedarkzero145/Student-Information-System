@@ -22,7 +22,7 @@ def open_login(window):
     bg_label_image =  Label(side_center_frame, image=bg_logo, background="#303030")
     bg_label_image.image = bg_logo
     bg_label_image.pack()
-    
+
 
     Label(side_center_frame,
           text="STUDENT INFORMATION SYSTEM",
@@ -38,7 +38,6 @@ def open_login(window):
 
     main_frame = Frame(window, borderwidth=2)
     main_frame.pack(fill="both", expand=True)
-
 
     center_content = Frame(main_frame)
     center_content.place(relx=0.5, rely=0.5, relwidth=0.5, anchor="center")
@@ -62,7 +61,7 @@ def open_login(window):
     password_label.pack(anchor="w")
 
     # Password Input
-    password_input = Entry(center_content, width=200)
+    password_input = Entry(center_content, width=200, show="*")
     password_input.pack(ipady=5, pady=(0, 10))
 
     button = Button(center_content, text="Login")
