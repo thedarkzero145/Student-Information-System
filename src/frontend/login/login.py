@@ -65,6 +65,7 @@ def open_login_window(window):
 
     # Password Label
     password_label = Label(center_content, text="Password")
+    password_label.pack(anchor="w")
 
     # Password Input
     password_input = Entry(center_content, width=200, show="•")
