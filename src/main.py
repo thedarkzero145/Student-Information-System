@@ -1,4 +1,4 @@
-from login.login import open_login
+from src.frontend.login.login import open_login
 from ttkbootstrap import Window
 
 
