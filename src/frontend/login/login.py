@@ -61,23 +61,26 @@ def open_login_window(window):
     user_input = Entry(center_content, width=200)
     user_input.pack(ipady=7, pady=(5, 10))
 
+    user_error_label = Label(center_content, bootstyle="danger")
+
     # Password Label
     password_label = Label(center_content, text="Password")
-    password_label.pack(anchor="w")
 
     # Password Input
     password_input = Entry(center_content, width=200, show="•")
     password_input.pack(ipady=7, pady=(5, 10))
 
+    password_error_label = Label(center_content, bootstyle="danger")
+
     remember_me_frame = Frame(center_content)
     remember_me_frame.pack(anchor="w", pady=7)
+
 
     remember_me_checkbox = Checkbutton(remember_me_frame)
     remember_me_checkbox.pack(side=LEFT)
 
     remember_me_label = Label(remember_me_frame, text="Remember me")
     remember_me_label.pack(side=LEFT)
-
 
     button = Button(center_content, text="Login")
     button.pack(fill="x", pady=(10, 20), ipady=5)
