@@ -54,7 +54,7 @@ def open_login(window):
 
     # User Input
     user_input = Entry(center_content, width=200)
-    user_input.pack(ipady=7, pady=(0, 10))
+    user_input.pack(ipady=7, pady=(3, 10))
 
     # Password Label
     password_label = Label(center_content, text="Password")
@@ -62,7 +62,7 @@ def open_login(window):
 
     # Password Input
     password_input = Entry(center_content, width=200, show="•")
-    password_input.pack(ipady=7, pady=(0, 10))
+    password_input.pack(ipady=7, pady=(3, 10))
 
     button = Button(center_content, text="Login")
     button.pack(fill="x", pady=(10, 20), ipady=5)
