@@ -6,37 +6,38 @@ import re
 
 from ttkbootstrap.constants import LEFT
 
-# user validation
-def user_validation(user):
-    pattern = r"^25-\d{4,4}$"
-    if user == "":
-        return True
-    if re.fullmatch(pattern, user):
-        return True
-    else:
-
-        return False
-
-# password validation
-def pass_validation(password):
-    if password == "":
-        return True
-    if len(password) < 12:
-        return False
-    if not any(char.isupper() for char in password):
-        return False
-    if not any(char.islower() for char in password):
-        return False
-    if not any(char.isdigit() for char in password):
-        return False
-    symbol = {"!","@","#","$","%","^","&","*",}
-    if not any(char in symbol for char in password):
-        return False
-
-    return True
 
 # initialize login
 def open_login_window(window):
+    # user validation
+    def user_validation(user):
+        pattern = r"^25-\d{4,4}$"
+        if user == "":
+            return True
+        if re.fullmatch(pattern, user):
+            return True
+        else:
+            user_error_label.config(text="Username must start at 25- ex. [25-2751]")  # ← show error
+            return False
+
+    # password validation
+    def pass_validation(password):
+        if password == "":
+            return True
+        if len(password) < 12:
+            return False
+        if not any(char.isupper() for char in password):
+            return False
+        if not any(char.islower() for char in password):
+            return False
+        if not any(char.isdigit() for char in password):
+            return False
+        symbol = {"!", "@", "#", "$", "%", "^", "&", "*", }
+        if not any(char in symbol for char in password):
+            return False
+
+        return True
+
     window = Toplevel(window)
     window.title("Login")
     window.geometry("1000x800")
@@ -97,6 +98,7 @@ def open_login_window(window):
     user_input.pack(ipady=7, pady=(5, 10))
 
     user_error_label = Label(center_content, bootstyle="danger")
+    user_error_label.pack(anchor)
 
     # Password Label
     password_label = Label(center_content, text="Password")
@@ -110,6 +112,7 @@ def open_login_window(window):
     password_input.pack(ipady=7, pady=(5, 10))
 
     password_error_label = Label(center_content, bootstyle="danger")
+    password_error_label.pack_forget()
 
     remember_me_frame = Frame(center_content)
     remember_me_frame.pack(anchor="w", pady=7)
@@ -120,7 +123,7 @@ def open_login_window(window):
 
     remember_me_label = Label(remember_me_frame, text="Remember me")
     remember_me_label.pack(side=LEFT)
-
+    remember_me_label.
     button = Button(center_content, text="Login")
     button.pack(fill="x", pady=(10, 20), ipady=5)
 
