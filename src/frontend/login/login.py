@@ -12,9 +12,8 @@ def open_login_window(window):
     # user validation
     def user_validation(user):
         pattern = r"^25-\d{4,4}$"
-        if user == "":
-            return True
         if re.fullmatch(pattern, user):
+            user_error_label.config(text="")
             return True
         else:
             user_error_label.config(text="Username must start at 25- ex. [25-2751]")  # ← show error
@@ -22,21 +21,33 @@ def open_login_window(window):
 
     # password validation
     def pass_validation(password):
-        if password == "":
-            return True
         if len(password) < 12:
+            password_error_label.config(text="Password must have at least 12 characters!")
             return False
         if not any(char.isupper() for char in password):
+            password_error_label.config(text="Password must have at least 1 uppercase letter!")
             return False
         if not any(char.islower() for char in password):
+            password_error_label.config(text="Password must have at least 1 lowercase letter!")
             return False
         if not any(char.isdigit() for char in password):
+            password_error_label.config(text="Password must have at least 1 number!")
             return False
-        symbol = {"!", "@", "#", "$", "%", "^", "&", "*", }
+        symbol = {"!", "@", "#", "$", "%", "^", "&", "*"}
         if not any(char in symbol for char in password):
+            password_error_label.config(text="Password must have at least 1 symbol (! @ # $ % ^ & *)")
             return False
 
+        password_error_label.config(text="")
         return True
+
+    def onSubmit():
+        username = user_input.get()
+        password = password_input.get()
+
+        if user_validation(username) and pass_validation(password):
+            # logic here...
+            pass
 
     window = Toplevel(window)
     window.title("Login")
@@ -95,10 +106,10 @@ def open_login_window(window):
     user_input = Entry(center_content, width=200,
                        validate="focus",
                        validatecommand=(user_func, "%P"))
-    user_input.pack(ipady=7, pady=(5, 10))
+    user_input.pack(ipady=7, pady=(5, 1))
 
     user_error_label = Label(center_content, bootstyle="danger")
-    user_error_label.pack(anchor)
+    user_error_label.pack(anchor="w")
 
     # Password Label
     password_label = Label(center_content, text="Password")
@@ -109,10 +120,10 @@ def open_login_window(window):
                            validate="focus",
                            validatecommand=(pass_func, "%P")
                            )
-    password_input.pack(ipady=7, pady=(5, 10))
+    password_input.pack(ipady=7, pady=(5, 1))
 
     password_error_label = Label(center_content, bootstyle="danger")
-    password_error_label.pack_forget()
+    password_error_label.pack(anchor="w")
 
     remember_me_frame = Frame(center_content)
     remember_me_frame.pack(anchor="w", pady=7)
@@ -123,7 +134,8 @@ def open_login_window(window):
 
     remember_me_label = Label(remember_me_frame, text="Remember me")
     remember_me_label.pack(side=LEFT)
-    remember_me_label.
+
     button = Button(center_content, text="Login")
+    button.config(command=onSubmit)
     button.pack(fill="x", pady=(10, 20), ipady=5)
 
