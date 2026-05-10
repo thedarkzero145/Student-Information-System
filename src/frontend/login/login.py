@@ -2,9 +2,38 @@ from ttkbootstrap import Frame, Toplevel, Label, Entry, Button, Checkbutton
 from tkinter import PhotoImage
 
 import os
+import re
 
 from ttkbootstrap.constants import LEFT
 
+# user validation
+def user_validation(user):
+    pattern = r"^25-\d{4,4}$"
+    if user == "":
+        return True
+    if re.fullmatch(pattern, user):
+        return True
+    else:
+
+        return False
+
+# password validation
+def pass_validation(password):
+    if password == "":
+        return True
+    if len(password) < 12:
+        return False
+    if not any(char.isupper() for char in password):
+        return False
+    if not any(char.islower() for char in password):
+        return False
+    if not any(char.isdigit() for char in password):
+        return False
+    symbol = {"!","@","#","$","%","^","&","*",}
+    if not any(char in symbol for char in password):
+        return False
+
+    return True
 
 # initialize login
 def open_login_window(window):
@@ -53,12 +82,18 @@ def open_login_window(window):
     label = Label(center_content, text="Log in to your workspace")
     label.pack()
 
+    # registers validation callback
+    user_func = window.register(user_validation)
+    pass_func = window.register(pass_validation)
+
     # User Label
     user_label = Label(center_content, text="Username")
     user_label.pack(anchor="w")
 
     # User Input
-    user_input = Entry(center_content, width=200)
+    user_input = Entry(center_content, width=200,
+                       validate="focus",
+                       validatecommand=(user_func, "%P"))
     user_input.pack(ipady=7, pady=(5, 10))
 
     user_error_label = Label(center_content, bootstyle="danger")
@@ -68,7 +103,10 @@ def open_login_window(window):
     password_label.pack(anchor="w")
 
     # Password Input
-    password_input = Entry(center_content, width=200, show="•")
+    password_input = Entry(center_content, width=200, show="•",
+                           validate="focus",
+                           validatecommand=(pass_func, "%P")
+                           )
     password_input.pack(ipady=7, pady=(5, 10))
 
     password_error_label = Label(center_content, bootstyle="danger")
