@@ -54,18 +54,18 @@ def open_login(window):
 
     # User Input
     user_input = Entry(center_content, width=200)
-    user_input.pack(ipady=5, pady=(0, 10))
+    user_input.pack(ipady=7, pady=(0, 10))
 
     # Password Label
     password_label = Label(center_content, text="Password")
     password_label.pack(anchor="w")
 
     # Password Input
-    password_input = Entry(center_content, width=200, show="*")
-    password_input.pack(ipady=5, pady=(0, 10))
+    password_input = Entry(center_content, width=200, show="•")
+    password_input.pack(ipady=7, pady=(0, 10))
 
     button = Button(center_content, text="Login")
-    button.pack(fill="x", pady=(10, 20), ipady=3)
+    button.pack(fill="x", pady=(10, 20), ipady=5)
 
 
     label = Label(center_content, text="Don't have an account?")
