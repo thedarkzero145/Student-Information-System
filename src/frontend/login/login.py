@@ -2,9 +2,10 @@ import os
 import re
 import tkinter as tk
 from PIL import Image, ImageTk
-from ttkbootstrap.constants import LEFT
+from ttkbootstrap import Frame, Label, Button, Entry, Checkbutton, Toplevel
+from ttkbootstrap.constants import LEFT, DARK
 
-from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME
+from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 
 DEMO_USERNAME = "25-0000"
 DEMO_PASSWORD = "Demo@Admin12!"
@@ -58,18 +59,17 @@ def open_login_window(window, on_success=None):
 
     # ── Window ────────────────────────────────────────────────────────────────
 
-    win = tk.Toplevel(window)
+    win = Toplevel(window)
     win.title("Login")
     win.geometry("1000x600")
-    win.configure(bg=CUSTOM_BACKGROUND_COLOR)
     win.resizable(False, False)
 
-    # ── LEFT PANEL (navy blue) ────────────────────────────────────────────────
+    # ── LEFT PANEL (navy blue) — use ttkbootstrap styled Frame ────────────────
 
-    left_frame = tk.Frame(win, bg=CUSTOM_BACKGROUND_COLOR)
+    left_frame = Frame(win, style=CUSTOM_BACKGROUND_NAME)
     left_frame.place(relx=0, rely=0, relwidth=0.45, relheight=1.0)
 
-    left_center = tk.Frame(left_frame, bg=CUSTOM_BACKGROUND_COLOR)
+    left_center = Frame(left_frame, style=CUSTOM_BACKGROUND_NAME)
     left_center.place(relx=0.5, rely=0.5, anchor="center")
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -79,37 +79,36 @@ def open_login_window(window, on_success=None):
     if not os.path.exists(logo_path):
         logo_path = os.path.join(assets_dir, "edu1.png")
 
-    pil_logo = Image.open(logo_path).resize((260, 260), Image.LANCZOS)
+    pil_logo = Image.open(logo_path).resize((240, 240), Image.LANCZOS)
     tk_logo = ImageTk.PhotoImage(pil_logo)
 
-    logo_img_label = tk.Label(left_center, image=tk_logo, bg=CUSTOM_BACKGROUND_COLOR)
+    logo_img_label = Label(left_center, image=tk_logo, style=CUSTOM_LABEL_NAME)
     logo_img_label.image = tk_logo
     logo_img_label.pack(pady=(0, 14))
 
-    tk.Label(
+    Label(
         left_center,
         text="ENCHONG DEE UNIVERSITY",
         font=(FONT_DEFAULT_NAME, 22, "bold"),
-        fg="white",
-        bg=CUSTOM_BACKGROUND_COLOR,
+        style=CUSTOM_LABEL_NAME,
         wraplength=330,
         justify="center",
+        anchor="center",
     ).pack()
 
-    tk.Label(
+    Label(
         left_center,
         text="STUDENT INFORMATION SYSTEM",
         font=(FONT_DEFAULT_NAME, 10),
-        fg="white",
-        bg=CUSTOM_BACKGROUND_COLOR,
+        style=CUSTOM_LABEL_NAME,
     ).pack(pady=(6, 0))
 
-    # ── RIGHT PANEL (white card) ──────────────────────────────────────────────
+    # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
 
-    right_frame = tk.Frame(win, bg="white")
+    right_frame = Frame(win)
     right_frame.place(relx=0.45, rely=0, relwidth=0.55, relheight=1.0)
 
-    form = tk.Frame(right_frame, bg="white")
+    form = Frame(right_frame)
     form.place(relx=0.5, rely=0.5, anchor="center", width=340)
 
     # Welcome heading
@@ -187,22 +186,16 @@ def open_login_window(window, on_success=None):
                                 fg="#dc3545", bg="white", anchor="w")
     auth_error_label.pack(fill="x", pady=(0, 8))
 
-    # ── Login button ──────────────────────────────────────────────────────────
+    # ── Login button — ttkbootstrap dark style ────────────────────────────────
 
-    login_btn = tk.Button(
+    login_btn = Button(
         form,
         text="LOGIN",
-        font=(FONT_DEFAULT_NAME, 12, "bold"),
-        fg="white",
-        bg="black",
-        activebackground="#333333",
-        activeforeground="white",
-        relief="flat",
-        bd=0,
+        bootstyle=DARK,
         cursor="hand2",
         command=on_submit,
     )
-    login_btn.pack(fill="x", ipady=10)
+    login_btn.pack(fill="x", ipady=6)
 
     # ── Demo hint ─────────────────────────────────────────────────────────────
 
