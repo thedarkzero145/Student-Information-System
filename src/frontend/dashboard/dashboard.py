@@ -8,6 +8,8 @@ from ttkbootstrap.icons import Emoji
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from main import on_hover, on_leave
 
+_ICON_PHOTO = None  # module-level ref prevents garbage collection
+
 
 def open_dashboard_window(window):
     window = Toplevel(window)
@@ -18,10 +20,14 @@ def open_dashboard_window(window):
     _assets_dir = os.path.join(current_dir, "..", "..", "..", "assets")
     _icon_path = os.path.join(_assets_dir, "app-icon.png")
     if os.path.exists(_icon_path):
+        global _ICON_PHOTO
         _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
-        _icon_photo = ImageTk.PhotoImage(_icon_img)
-        window.iconphoto(True, _icon_photo)
-        window._icon_photo = _icon_photo
+        _ICON_PHOTO = ImageTk.PhotoImage(_icon_img)
+
+        def _apply_icon():
+            window.iconphoto(True, _ICON_PHOTO)
+
+        window.after(10, _apply_icon)
 
     window.columnconfigure(0, weight=0, minsize=250)
     window.columnconfigure(1, weight=1)

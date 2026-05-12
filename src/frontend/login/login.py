@@ -10,6 +10,8 @@ from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGRO
 DEMO_USERNAME = "25-0000"
 DEMO_PASSWORD = "Demo@Admin12!"
 
+_ICON_PHOTO = None  # module-level ref prevents garbage collection
+
 
 def open_login_window(window, on_success=None):
 
@@ -68,10 +70,14 @@ def open_login_window(window, on_success=None):
         os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "assets", "app-icon.png"
     )
     if os.path.exists(_icon_path):
+        global _ICON_PHOTO
         _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
-        _icon_photo = ImageTk.PhotoImage(_icon_img)
-        win.iconphoto(True, _icon_photo)
-        win._icon_photo = _icon_photo
+        _ICON_PHOTO = ImageTk.PhotoImage(_icon_img)
+
+        def _apply_icon():
+            win.iconphoto(True, _ICON_PHOTO)
+
+        win.after(10, _apply_icon)
 
     # ── LEFT PANEL (navy blue) — use ttkbootstrap styled Frame ────────────────
 
