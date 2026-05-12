@@ -23,8 +23,7 @@ def open_dashboard_window(window):
     side_frame.grid(row=0, column=0, sticky='nsew')
 
     # ==== DASHBOARD FRAME ====
-    dashboard_frame = Frame(window)
-    dashboard_frame.grid(row=0, column=1, sticky='nsew')
+    open_dashboard_frame(window)
 
     # ==== SIDE header CONTAINER ====
     side_header_container = Frame(side_frame, style=CUSTOM_BACKGROUND_NAME)
@@ -125,6 +124,23 @@ def open_dashboard_window(window):
                            style="BG_BUTTON_DANGER.TButton"
                         )
     logout_btn.pack(fill="x")
-    logout_btn.bind("<Enter>", on_hover)
-    logout_btn.bind("<Leave>", on_leave)
 
+def open_dashboard_frame(window):
+    dashboard_frame = Frame(window)
+    dashboard_frame.grid(row=0, column=1, sticky='nsew')
+
+    dashboard_frame.columnconfigure(0, weight=1)
+    dashboard_frame.columnconfigure(1, weight=1)
+    dashboard_frame.columnconfigure(2, weight=1)
+    dashboard_frame.columnconfigure(3, weight=1)
+    dashboard_frame.columnconfigure(4, weight=1)
+
+    dashboard_frame.rowconfigure(0, weight=0, minsize=80)
+    dashboard_frame.rowconfigure(1, weight=2)
+    dashboard_frame.rowconfigure(2, weight=2)
+    dashboard_frame.rowconfigure(3, weight=2)
+    # ===== UPPER HEADER DASHBOARD ====
+    header_dashboard = Frame(dashboard_frame)
+    header_dashboard.grid(row=0, columnspan=5, sticky='nsew', padx=18)
+
+    Label(header_dashboard, text="Dashboard", font=("Times New Roman", 20, "bold")).pack(side=LEFT, fill="x")
