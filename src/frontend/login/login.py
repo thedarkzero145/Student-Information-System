@@ -6,8 +6,11 @@ from ttkbootstrap.constants import LEFT
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME
 
+DEMO_USERNAME = "25-0000"
+DEMO_PASSWORD = "Demo@Admin12!"
 
-def open_login_window(window):
+
+def open_login_window(window, on_success=None):
 
     # ── Validation ────────────────────────────────────────────────────────────
 
@@ -42,8 +45,16 @@ def open_login_window(window):
     def on_submit():
         username = user_input.get()
         password = password_input.get()
-        if user_validation(username) and pass_validation(password):
-            print("valid inputs")
+
+        if not user_validation(username) or not pass_validation(password):
+            return
+
+        if username == DEMO_USERNAME and password == DEMO_PASSWORD:
+            auth_error_label.config(text="")
+            if on_success:
+                on_success(win)
+        else:
+            auth_error_label.config(text="Invalid username or password.")
 
     # ── Window ────────────────────────────────────────────────────────────────
 
@@ -152,7 +163,7 @@ def open_login_window(window):
 
     remember_var = tk.BooleanVar()
     remember_row = tk.Frame(form, bg="white")
-    remember_row.pack(anchor="w", pady=(0, 18))
+    remember_row.pack(anchor="w", pady=(0, 10))
 
     tk.Checkbutton(
         remember_row,
@@ -170,6 +181,12 @@ def open_login_window(window):
         bg="white",
     ).pack(side=LEFT)
 
+    # ── Auth error (wrong credentials) ───────────────────────────────────────
+
+    auth_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 9),
+                                fg="#dc3545", bg="white", anchor="w")
+    auth_error_label.pack(fill="x", pady=(0, 8))
+
     # ── Login button ──────────────────────────────────────────────────────────
 
     login_btn = tk.Button(
@@ -186,3 +203,13 @@ def open_login_window(window):
         command=on_submit,
     )
     login_btn.pack(fill="x", ipady=10)
+
+    # ── Demo hint ─────────────────────────────────────────────────────────────
+
+    tk.Label(
+        form,
+        text=f"Demo — user: {DEMO_USERNAME}  |  pass: {DEMO_PASSWORD}",
+        font=(FONT_DEFAULT_NAME, 8),
+        fg="#aaaaaa",
+        bg="white",
+    ).pack(pady=(10, 0))
