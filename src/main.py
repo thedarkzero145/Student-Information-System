@@ -1,3 +1,8 @@
+from ttkbootstrap import Style
+
+from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR
+
+
 def main() -> None:
 	import os
 	import sys
@@ -10,10 +15,17 @@ def main() -> None:
 			sys.path.insert(0, project_root)
 
 	from src.frontend.login.login import open_login_window
+	from src.frontend.dashboard.dashboard import open_dashboard_window
 	from ttkbootstrap import Window
 
-	window = Window(themename="darkly")
+	window = Window()
+	# custom colors dont touch - aizen
+	window.style.configure('BG_FRAME.TFrame', background=CUSTOM_BACKGROUND_COLOR)
+	window.style.configure("BG_CHECKBOX.TCheckbutton", background=CUSTOM_BACKGROUND_COLOR)
+	window.style.configure("BG_ENTRY.TEntry", background=CUSTOM_BACKGROUND_COLOR)
+	window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
 	window.withdraw()
+
 
 	open_login_window(window)
 
