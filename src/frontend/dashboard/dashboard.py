@@ -13,7 +13,7 @@ def open_dashboard_window(window):
     side_bar_frame.pack_propagate(False)
     side_bar_frame.pack(side="left", fill="y", expand=False)
 
-    Label(side_bar_frame, text="PAMANTASAN NG LUNGSOD NG VALENZUELA", font=("SYSTEM ONLINE", 15), background="#303030").pack()
+    Label(side_bar_frame, text="SIS", font=("SYSTEM ONLINE", 15), background="#303030").pack()
     Label(side_bar_frame,
           text="Student Information System",
           font=("Nova Mono", 12, "bold"), background="#303030").pack()
