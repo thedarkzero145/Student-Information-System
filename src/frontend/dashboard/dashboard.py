@@ -7,12 +7,15 @@ from ttkbootstrap.icons import Emoji
 
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from main import on_hover, on_leave
+from icon_utils import apply_window_icon
 
 
 def open_dashboard_window(window):
     window = Toplevel(window)
     window.title("Dashboard")
     window.geometry("1000x600")
+
+    apply_window_icon(window, calling_file=__file__)
 
     window.columnconfigure(0, weight=0, minsize=250)
     window.columnconfigure(1, weight=1)
