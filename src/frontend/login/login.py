@@ -35,7 +35,7 @@ def open_login_window(window):
             return False
         symbol = {"!", "@", "#", "$", "%", "^", "&", "*"}
         if not any(char in symbol for char in password):
-            password_error_label.config(text="Password must have at least 1 symbol (! @ # $ % ^ & *)")
+            password_error_label.config(text=" Password must have at least 1 symbol (! @ # $ % ^ & *)")
             return False
 
         password_error_label.config(text="")
@@ -64,11 +64,10 @@ def open_login_window(window):
     side_center_frame.pack(expand=True)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    bg_logo = tk.PhotoImage(file=os.path.join(BASE_DIR, "assets", "edu1.png"))
+    bg_logo = tk.PhotoImage(file=os.path.join(BASE_DIR, "../../../assets", "edu1.png"))
 
     bg_label_image =  Label(side_center_frame, image=bg_logo, style="BG_LABEL.TLabel")
     bg_label_image.image = bg_logo
-
     bg_label_image.pack(expand=True)
 
 
@@ -140,6 +139,7 @@ def open_login_window(window):
     remember_me_label.pack(side=LEFT)
 
     button = Button(center_content, bootstyle="darkly",
+                    cursor="hand2",
                     text="Login")
     button.config(command=onSubmit)
     button.pack(fill="x", pady=(12, 16), ipady=4)

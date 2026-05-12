@@ -7,6 +7,7 @@ def main() -> None:
 	import os
 	import sys
 
+
 	# If this file is executed as a script (e.g., `python src/main.py`), Python adds
 	# `src/` (not the project root) to sys.path, so `import src...` fails.
 	if __package__ in (None, ""):
@@ -21,16 +22,22 @@ def main() -> None:
 	window = Window()
 	# custom colors dont touch - aizen
 	window.style.configure('BG_FRAME.TFrame', background=CUSTOM_BACKGROUND_COLOR)
+	window.style.configure('BG_BUTTON.TButton', anchor="w", font=("Segoi UI", 10), padding=15, borderwidth=0, background=CUSTOM_BACKGROUND_COLOR)
+	window.style.configure('BG_BUTTON_DANGER.TButton', foreground="#ff2414", anchor="w", font=("Segoi UI", 10), padding=15, borderwidth=0, background=CUSTOM_BACKGROUND_COLOR)
 	window.style.configure("BG_CHECKBOX.TCheckbutton", background=CUSTOM_BACKGROUND_COLOR)
 	window.style.configure("BG_ENTRY.TEntry", background=CUSTOM_BACKGROUND_COLOR)
 	window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
 	window.withdraw()
 
 
-	open_login_window(window)
+	open_dashboard_window(window)
 
 	window.mainloop()
 
+def on_hover(event):
+	event.widget.config(background="#d9534f", foreground="white")
+def on_leave(event):
+	event.widget.config(background=CUSTOM_BACKGROUND_COLOR, foreground="#d9534f")
 
 if __name__ == "__main__":
 	main()
