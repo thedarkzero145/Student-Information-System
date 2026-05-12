@@ -75,7 +75,7 @@ def open_login_window(window, on_success=None):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     assets_dir = os.path.join(BASE_DIR, "..", "..", "..", "assets")
 
-    logo_path = os.path.join(assets_dir, "login-logo.png")
+    logo_path = os.path.join(assets_dir, "edu-icon.png")
     if not os.path.exists(logo_path):
         logo_path = os.path.join(assets_dir, "edu1.png")
 
