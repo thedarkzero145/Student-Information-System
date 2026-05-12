@@ -6,11 +6,10 @@ from ttkbootstrap import Frame, Label, Button, Entry, Checkbutton, Toplevel
 from ttkbootstrap.constants import LEFT, DARK
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
+from icon_utils import apply_window_icon
 
 DEMO_USERNAME = "25-0000"
 DEMO_PASSWORD = "Demo@Admin12!"
-
-_ICON_PHOTO = None  # module-level ref prevents garbage collection
 
 
 def open_login_window(window, on_success=None):
@@ -66,18 +65,7 @@ def open_login_window(window, on_success=None):
     win.geometry("1000x600")
     win.resizable(False, False)
 
-    _icon_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "assets", "app-icon.png"
-    )
-    if os.path.exists(_icon_path):
-        global _ICON_PHOTO
-        _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
-        _ICON_PHOTO = ImageTk.PhotoImage(_icon_img)
-
-        def _apply_icon():
-            win.iconphoto(True, _ICON_PHOTO)
-
-        win.after(10, _apply_icon)
+    apply_window_icon(win, calling_file=__file__)
 
     # ── LEFT PANEL (navy blue) — use ttkbootstrap styled Frame ────────────────
 

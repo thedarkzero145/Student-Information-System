@@ -7,8 +7,7 @@ from ttkbootstrap.icons import Emoji
 
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from main import on_hover, on_leave
-
-_ICON_PHOTO = None  # module-level ref prevents garbage collection
+from icon_utils import apply_window_icon
 
 
 def open_dashboard_window(window):
@@ -16,18 +15,7 @@ def open_dashboard_window(window):
     window.title("Dashboard")
     window.geometry("1000x600")
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    _assets_dir = os.path.join(current_dir, "..", "..", "..", "assets")
-    _icon_path = os.path.join(_assets_dir, "app-icon.png")
-    if os.path.exists(_icon_path):
-        global _ICON_PHOTO
-        _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
-        _ICON_PHOTO = ImageTk.PhotoImage(_icon_img)
-
-        def _apply_icon():
-            window.iconphoto(True, _ICON_PHOTO)
-
-        window.after(10, _apply_icon)
+    apply_window_icon(window, calling_file=__file__)
 
     window.columnconfigure(0, weight=0, minsize=250)
     window.columnconfigure(1, weight=1)
