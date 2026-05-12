@@ -1,6 +1,16 @@
 from ttkbootstrap import Style
+from PIL import Image, ImageTk
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR
+
+
+def _set_icon(win, assets_dir):
+        icon_path = os.path.join(assets_dir, "app-icon.png")
+        if os.path.exists(icon_path):
+                icon_img = Image.open(icon_path).resize((64, 64), Image.LANCZOS)
+                icon_photo = ImageTk.PhotoImage(icon_img)
+                win.iconphoto(True, icon_photo)
+                win._icon_photo = icon_photo  # prevent garbage collection
 
 
 def main() -> None:
@@ -29,6 +39,8 @@ def main() -> None:
         window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
         window.withdraw()
 
+        assets_dir = os.path.join(os.path.dirname(__file__), "..", "assets")
+        _set_icon(window, os.path.abspath(assets_dir))
 
         def on_login_success(login_win):
                 login_win.destroy()

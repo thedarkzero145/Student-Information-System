@@ -64,6 +64,15 @@ def open_login_window(window, on_success=None):
     win.geometry("1000x600")
     win.resizable(False, False)
 
+    _icon_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "assets", "app-icon.png"
+    )
+    if os.path.exists(_icon_path):
+        _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
+        _icon_photo = ImageTk.PhotoImage(_icon_img)
+        win.iconphoto(True, _icon_photo)
+        win._icon_photo = _icon_photo
+
     # ── LEFT PANEL (navy blue) — use ttkbootstrap styled Frame ────────────────
 
     left_frame = Frame(win, style=CUSTOM_BACKGROUND_NAME)

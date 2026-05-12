@@ -14,6 +14,15 @@ def open_dashboard_window(window):
     window.title("Dashboard")
     window.geometry("1000x600")
 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    _assets_dir = os.path.join(current_dir, "..", "..", "..", "assets")
+    _icon_path = os.path.join(_assets_dir, "app-icon.png")
+    if os.path.exists(_icon_path):
+        _icon_img = Image.open(_icon_path).resize((64, 64), Image.LANCZOS)
+        _icon_photo = ImageTk.PhotoImage(_icon_img)
+        window.iconphoto(True, _icon_photo)
+        window._icon_photo = _icon_photo
+
     window.columnconfigure(0, weight=0, minsize=250)
     window.columnconfigure(1, weight=1)
     window.rowconfigure(0, weight=1)
