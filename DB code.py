@@ -1,4 +1,3 @@
-
 import sqlite3
 import os
 
@@ -6,8 +5,6 @@ import os
 # DATABASE PATH
 
 DB_FILE = r"C:\Users\jvang\OneDrive\Documents\StudentSystem DB.db"
-
-
 
 # CONNECT DATABASE
 
@@ -17,9 +14,7 @@ def connect_db():
         return None
 
     return sqlite3.connect(DB_FILE)
-
-
-
+    
 # CREATE
 
 def add_student():
@@ -58,8 +53,6 @@ def add_student():
 
     conn.close()
 
-
-
 # READ
 
 def show_students():
@@ -84,8 +77,6 @@ def show_students():
         print("Error:", e)
 
     conn.close()
-
-
 
 # UPDATE
 
@@ -134,8 +125,6 @@ def update_student():
 
     conn.close()
 
-
-
 # DELETE
 
 def delete_student():
@@ -163,8 +152,6 @@ def delete_student():
         print("Error:", e)
 
     conn.close()
-
-
 
 # MAIN MENU
 
