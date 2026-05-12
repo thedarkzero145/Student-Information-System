@@ -1,3 +1,6 @@
+import os
+import sys
+
 from ttkbootstrap import Style
 from PIL import Image, ImageTk
 
@@ -14,10 +17,6 @@ def _set_icon(win, assets_dir):
 
 
 def main() -> None:
-        import os
-        import sys
-
-
         # If this file is executed as a script (e.g., `python src/main.py`), Python adds
         # `src/` (not the project root) to sys.path, so `import src...` fails.
         if __package__ in (None, ""):
