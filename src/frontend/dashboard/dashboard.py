@@ -135,48 +135,6 @@ def open_dashboard_window(window, login_credentials=None):
     logout_btn.bind("<Enter>", on_hover)
     logout_btn.bind("<Leave>", on_leave)
 
-    def switch_page(page_function):
-        for widget in dashboard_frame.winfo_children():
-            widget.destroy()
-
-        page_function()
-
-    def dashboard_page():
-        Label(
-            dashboard_frame,
-            text="Dashboard Page",
-            font=("Arial", 25, "bold")
-        ).pack(pady=20)
-
-    def grades_page():
-        Label(
-            dashboard_frame,
-            text="Grades Page"
-        ).pack(pady=20)
-
-    def subjects_page():
-        Label(
-            dashboard_frame,
-            text="Subjects Page"
-        ).pack(pady=20)
-
-    def announcement_page():
-        Label(
-            dashboard_frame,
-            text="Announcement Page"
-        ).pack(pady=20)
-
-    def events_page():
-        Label(
-            dashboard_frame,
-            text="Events Page"
-        ).pack(pady=20)
-
-    def settings_page():
-        Label(
-            dashboard_frame,
-            text="Settings Page"
-        ).pack(pady=20)
 
     def logout():
         from src.frontend.login.login import open_login_window
@@ -207,14 +165,4 @@ def open_dashboard_window(window, login_credentials=None):
             on_success=on_login_success,
             load_saved_credentials=True,
         )
-
-
-    dashboard_btn.config(command=lambda: switch_page(dashboard_page))
-    grades_btn.config(command=lambda: switch_page(grades_page))
-    subjects_btn.config(command=lambda: switch_page(subjects_page))
-    announcement_btn.config(command=lambda: switch_page(announcement_page))
-    events_btn.config(command=lambda: switch_page(events_page))
-    setting_btn.config(command=lambda: switch_page(settings_page))
     logout_btn.config(command=logout)
-
-    switch_page(dashboard_page)
