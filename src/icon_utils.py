@@ -48,7 +48,7 @@ def apply_window_icon(win, assets_dir=None, calling_file=None):
                     img.save(ico, format="ICO",
                              sizes=[(256, 256), (64, 64), (32, 32), (16, 16)])
                     _ico_path = ico
-                win.iconbitmap(_ico_path)
+                win.iconbitmap(default=_ico_path)
             else:
                 if _icon_photo is None:
                     from PIL import Image, ImageTk

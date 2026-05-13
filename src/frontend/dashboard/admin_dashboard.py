@@ -427,10 +427,142 @@ def build_student_profile_tab(parent, switch_cb):
               bg=WHITE, fg=TEXT_PRIMARY, relief="solid", bd=1, padx=16, pady=6).pack(side="right", padx=12)
 
 def build_add_student_tab(parent, switch_cb):
-    tk.Label(parent, text="Add New Student", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Form fields to add a student will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
+    # Main container
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    # Title
+    tk.Label(container, text="New Student Record", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(pady=(48, 32))
+
+    # Form Container
+    form = tk.Frame(container, bg=WHITE)
+    form.pack(fill="both", expand=True, padx=120)
+
+    def _make_field(parent_frame, label_text, placeholder, is_dropdown=False, is_date=False):
+        f = tk.Frame(parent_frame, bg=WHITE)
+        f.pack(fill="x", expand=True, padx=16, pady=(0, 24))
+        
+        tk.Label(f, text=label_text, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 8))
+        
+        input_bg = "#f4f4f5" # light gray
+        inner = tk.Frame(f, bg=input_bg, height=48)
+        inner.pack(fill="x")
+        inner.pack_propagate(False)
+        
+        if is_dropdown:
+            style = tkttk.Style()
+            style.configure("AddStudent.TCombobox", padding=5)
+            cb = tkttk.Combobox(inner, font=("Segoe UI", 10), state="readonly", style="AddStudent.TCombobox")
+            cb.pack(fill="both", expand=True, padx=2, pady=8)
+            cb.set(placeholder)
+            if label_text == "Course":
+                cb['values'] = ["BS Computer Science", "BS Information Technology", "BS Nursing", "BS Education", "BS Accountancy"]
+            elif label_text == "Year Level":
+                cb['values'] = ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+            return cb
+        elif is_date:
+            import ttkbootstrap as tb
+            de = tb.DateEntry(inner)
+            de.pack(fill="both", expand=True, padx=2, pady=8)
+            return de
+        else:
+            e = tk.Entry(inner, font=("Segoe UI", 10), bg=input_bg, fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+            e.pack(fill="both", expand=True, padx=16, pady=12)
+            e.insert(0, placeholder)
+            return e
+
+    # Row 1
+    r1 = tk.Frame(form, bg=WHITE)
+    r1.pack(fill="x")
+    c1_1 = tk.Frame(r1, bg=WHITE); c1_1.pack(side="left", fill="both", expand=True)
+    c1_2 = tk.Frame(r1, bg=WHITE); c1_2.pack(side="left", fill="both", expand=True)
+    
+    _make_field(c1_1, "Student ID", "26-1234")
+    _make_field(c1_2, "Full name", "Surname, Full name, M.I")
+
+    # Row 2
+    r2 = tk.Frame(form, bg=WHITE)
+    r2.pack(fill="x")
+    c2_1 = tk.Frame(r2, bg=WHITE); c2_1.pack(side="left", fill="both", expand=True)
+    c2_2 = tk.Frame(r2, bg=WHITE); c2_2.pack(side="left", fill="both", expand=True)
+    
+    _make_field(c2_1, "Course", "Select Course", is_dropdown=True)
+    _make_field(c2_2, "Year Level", "Select Year", is_dropdown=True)
+
+    # Row 3
+    r3 = tk.Frame(form, bg=WHITE)
+    r3.pack(fill="x")
+    c3_1 = tk.Frame(r3, bg=WHITE); c3_1.pack(side="left", fill="both", expand=True)
+    c3_2 = tk.Frame(r3, bg=WHITE); c3_2.pack(side="left", fill="both", expand=True)
+    
+    _make_field(c3_1, "Email Address", "student@university.edu")
+    _make_field(c3_2, "Contact Number", "+63 000 000 0000")
+
+    # Row 4 (Full width)
+    r4 = tk.Frame(form, bg=WHITE)
+    r4.pack(fill="x")
+    _make_field(r4, "Home Address", "House No. , Street, Barangay, City, Province")
+
+    # Row 5 (Status and Date)
+    r5 = tk.Frame(form, bg=WHITE)
+    r5.pack(fill="x")
+    c5_1 = tk.Frame(r5, bg=WHITE); c5_1.pack(side="left", fill="both", expand=True, padx=16)
+    c5_2 = tk.Frame(r5, bg=WHITE); c5_2.pack(side="left", fill="both", expand=True)
+    
+    # Status
+    tk.Label(c5_1, text="Account Status", font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 12))
+    status_f = tk.Frame(c5_1, bg=WHITE)
+    status_f.pack(anchor="w")
+    
+    status_var = tk.StringVar(value="Active")
+    radio_btns = []
+    
+    def _update_radios():
+        for rb in radio_btns:
+            is_sel = (status_var.get() == rb['val'])
+            rb['icon'].config(text="●" if is_sel else "○", fg=NAV_BG if is_sel else "#cbd5e1")
+
+    def _radio(parent_frame, text):
+        f = tk.Frame(parent_frame, bg=WHITE, cursor="hand2")
+        f.pack(side="left", padx=(0, 24))
+        
+        lbl_icon = tk.Label(f, font=("Segoe UI Emoji", 14), bg=WHITE)
+        lbl_icon.pack(side="left")
+        lbl_text = tk.Label(f, text=text, font=("Segoe UI", 9), fg=TEXT_PRIMARY, bg=WHITE)
+        lbl_text.pack(side="left", padx=(4, 0))
+        
+        radio_btns.append({'val': text, 'icon': lbl_icon})
+        
+        def _on_click(e):
+            status_var.set(text)
+            _update_radios()
+            
+        f.bind("<Button-1>", _on_click)
+        lbl_icon.bind("<Button-1>", _on_click)
+        lbl_text.bind("<Button-1>", _on_click)
+    
+    _radio(status_f, "Active")
+    _radio(status_f, "Inactive")
+    _update_radios()
+    
+    _make_field(c5_2, "Enrollment Date", "mm/dd/yy", is_date=True)
+
+    # Notification callback
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg="#10b981", highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Student record added successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    # Bottom Buttons
+    footer = tk.Frame(form, bg=WHITE)
+    footer.pack(fill="x", pady=(32, 48), padx=16)
+    
+    btn_add = tk.Button(footer, text="Add Student Record", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_add.pack(side="right")
+    
+    btn_cancel = tk.Button(footer, text="Cancel", font=("Segoe UI", 10, "bold"), fg=NAV_BG, bg=WHITE, relief="solid", bd=1, padx=16, pady=6, cursor="hand2")
+    btn_cancel.pack(side="right", padx=(0, 16))
 
 def build_edit_student_tab(parent, switch_cb):
     tk.Label(parent, text="Edit Student Record", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
@@ -486,8 +618,21 @@ def open_admin_dashboard(window, on_logout=None):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     assets_dir  = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets"))
 
-    tk.Label(logo_row, text="🎓", font=("Segoe UI Emoji", 28),
-             fg=WHITE, bg=NAV_BG).pack(side="left", padx=(0, 12))
+    lbl_logo = tk.Label(logo_row, bg=NAV_BG)
+    lbl_logo.pack(side="left", padx=(0, 12))
+    
+    try:
+        from PIL import Image, ImageTk
+        path = os.path.join(assets_dir, "edu-icon.png")
+        if os.path.exists(path):
+            img = Image.open(path).resize((42, 42), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+            lbl_logo.config(image=photo)
+            lbl_logo.image = photo
+        else:
+            lbl_logo.config(text="🎓", font=("Segoe UI Emoji", 28), fg=WHITE)
+    except Exception:
+        lbl_logo.config(text="🎓", font=("Segoe UI Emoji", 28), fg=WHITE)
 
     text_col = tk.Frame(logo_row, bg=NAV_BG, highlightthickness=0, bd=0)
     text_col.pack(side="left")
@@ -519,6 +664,12 @@ def open_admin_dashboard(window, on_logout=None):
         current_tab_frame = main_frame
 
         _set_active_nav(tab_name)
+        
+        try:
+            if 'topbar_title_lbl' in globals() or 'topbar_title_lbl' in locals() or 'topbar_title_lbl' in win.__dict__:
+                win.topbar_title_lbl.config(text=tab_name)
+        except Exception:
+            pass
 
         if tab_name == "Dashboard" or tab_name == "Shortcuts":
             build_dashboard_tab(main_frame, switch_tab)
@@ -620,8 +771,9 @@ def open_admin_dashboard(window, on_logout=None):
     left_top = tk.Frame(tb_inner, bg=NAV_BG)
     left_top.pack(side="left", fill="y")
 
-    tk.Label(left_top, text="Dashboard", font=("Segoe UI", 12, "bold"),
-             fg=WHITE, bg=NAV_BG).pack(side="left", padx=(0, 16), pady=0)
+    win.topbar_title_lbl = tk.Label(left_top, text="Dashboard", font=("Segoe UI", 12, "bold"),
+             fg=WHITE, bg=NAV_BG)
+    win.topbar_title_lbl.pack(side="left", padx=(0, 16), pady=0)
     # bind vertical centering
     left_top.pack_configure(pady=0)
 
@@ -635,17 +787,19 @@ def open_admin_dashboard(window, on_logout=None):
     search_wrap.pack(side="left", padx=(16, 0), pady=15)
     tk.Label(search_wrap, text="🔍", font=("Segoe UI", 9),
              fg="#8fa8cc", bg="#0d2d6b").pack(side="left", padx=(8, 2))
+    
+    # Updated to have a white background and black text on focus
     search_entry = tk.Entry(search_wrap, font=("Segoe UI", 10),
-                            fg="#8fa8cc", bg="#0d2d6b",
-                            insertbackground=WHITE,
+                            fg="#8fa8cc", bg=WHITE,
+                            insertbackground="black",
                             relief="flat", bd=0, width=26)
     search_entry.insert(0, "Search student ID or name...")
-    search_entry.pack(side="left", pady=7, padx=(0, 10))
+    search_entry.pack(side="left", pady=4, padx=(4, 10))
 
     def _fi(e):
         if search_entry.get() == "Search student ID or name...":
             search_entry.delete(0, "end")
-            search_entry.config(fg=WHITE)
+            search_entry.config(fg=TEXT_PRIMARY)
 
     def _fo(e):
         if not search_entry.get().strip():
