@@ -16,6 +16,7 @@ def main() -> None:
 
         from src.frontend.login.login import open_login_window
         from src.frontend.dashboard.dashboard import open_dashboard_window
+        from src.frontend.dashboard.admin_dashboard import open_admin_dashboard
         from ttkbootstrap import Window
 
         window = Window()
@@ -28,9 +29,14 @@ def main() -> None:
         window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
         window.withdraw()
 
-        def on_login_success(login_win):
+        def on_login_success(login_win, role="student"):
                 login_win.destroy()
-                open_dashboard_window(window)
+                if role == "admin":
+                        def on_logout():
+                                open_login_window(window, on_success=on_login_success)
+                        open_admin_dashboard(window, on_logout=on_logout)
+                else:
+                        open_dashboard_window(window)
 
         open_login_window(window, on_success=on_login_success)
 

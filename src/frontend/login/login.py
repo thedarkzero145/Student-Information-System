@@ -8,8 +8,10 @@ from ttkbootstrap.constants import LEFT, DARK
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
 
-DEMO_USERNAME = "25-0000"
-DEMO_PASSWORD = "Demo@Admin12!"
+DEMO_USERNAME  = "25-0000"
+DEMO_PASSWORD  = "Demo@Admin12!"
+ADMIN_USERNAME = "admin-0001"
+ADMIN_PASSWORD = "Admin@Pass12!"
 
 
 def open_login_window(window, on_success=None):
@@ -48,13 +50,23 @@ def open_login_window(window, on_success=None):
         username = user_input.get()
         password = password_input.get()
 
+        # Admin check first — bypasses student ID format validation
+        if username == ADMIN_USERNAME:
+            if password == ADMIN_PASSWORD:
+                auth_error_label.config(text="")
+                if on_success:
+                    on_success(win, "admin")
+            else:
+                auth_error_label.config(text="Invalid username or password.")
+            return
+
         if not user_validation(username) or not pass_validation(password):
             return
 
         if username == DEMO_USERNAME and password == DEMO_PASSWORD:
             auth_error_label.config(text="")
             if on_success:
-                on_success(win)
+                on_success(win, "student")
         else:
             auth_error_label.config(text="Invalid username or password.")
 
