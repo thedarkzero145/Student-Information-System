@@ -2,20 +2,18 @@ import tkinter as tk
 
 NAV_BG        = "#001f5b"
 WHITE         = "#ffffff"
-CONTENT_BG    = "#edf0f5"
 TEXT_PRIMARY  = "#111827"
 TEXT_MUTED    = "#6b7280"
-CARD_BG       = "#ffffff"
 CARD_BORDER   = "#e2e8f0"
 
 def build_grades_tab(parent, switch_cb):
     # Main container
-    container = tk.Frame(parent, bg=CONTENT_BG)
-    container.pack(fill="both", expand=True, padx=32, pady=32)
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
 
     # --- TOP ROW ---
-    top_row = tk.Frame(container, bg=CONTENT_BG)
-    top_row.pack(fill="x", pady=(0, 24))
+    top_row = tk.Frame(container, bg=WHITE)
+    top_row.pack(fill="x", pady=(48, 24), padx=48)
 
     # Left Card: Cumulative Grade
     left_card_outer = tk.Frame(top_row, bg=CARD_BORDER)
@@ -67,13 +65,13 @@ def build_grades_tab(parent, switch_cb):
     tk.Label(right_inner, text="Senior Status", font=("Segoe UI", 10), fg="#bfdbfe", bg="#1e3a8a").pack(anchor="e")
 
     # --- MIDDLE: Transcript Title ---
-    tk.Label(container, text="Current Semester Transcript", font=("Segoe UI", 18), fg=TEXT_PRIMARY, bg=CONTENT_BG).pack(anchor="w", pady=(0, 12))
+    tk.Label(container, text="Current Semester Transcript", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(16, 16), padx=48)
 
     # --- BOTTOM: Table ---
     table_outer = tk.Frame(container, bg=CARD_BORDER)
-    table_outer.pack(fill="both", expand=True)
+    table_outer.pack(fill="both", expand=True, padx=48)
 
-    table_bg = tk.Frame(table_outer, bg=CARD_BG)
+    table_bg = tk.Frame(table_outer, bg=WHITE)
     table_bg.pack(padx=1, pady=1, fill="both", expand=True)
 
     # Header
@@ -99,7 +97,7 @@ def build_grades_tab(parent, switch_cb):
     ]
 
     for i, (code, title, units, grade, bg_col, fg_col) in enumerate(courses):
-        row_bg = CARD_BG if i % 2 == 0 else "#f8fafc"
+        row_bg = WHITE if i % 2 == 0 else "#f8fafc"
         row_f = tk.Frame(table_bg, bg=row_bg, height=60)
         row_f.pack(fill="x")
         row_f.pack_propagate(False)
@@ -116,14 +114,14 @@ def build_grades_tab(parent, switch_cb):
         tk.Label(badge_wrap, text=grade, font=("Segoe UI", 10, "bold"), fg=fg_col, bg=bg_col, width=4).pack()
 
     # --- FOOTER ---
-    footer = tk.Frame(container, bg=CONTENT_BG)
-    footer.pack(fill="x", pady=(16, 0))
+    footer = tk.Frame(container, bg=WHITE)
+    footer.pack(fill="x", pady=(16, 32), padx=48)
     
-    btn_wrap = tk.Frame(footer, bg=WHITE, highlightthickness=1, highlightbackground="#002d72", cursor="hand2")
-    btn_wrap.pack(side="right")
-    
-    inner_btn = tk.Frame(btn_wrap, bg=WHITE, padx=16, pady=8)
-    inner_btn.pack()
-    tk.Label(inner_btn, text="📥", font=("Segoe UI Emoji", 12), fg="#002d72", bg=WHITE).pack(side="left", padx=(0, 8))
-    tk.Label(inner_btn, text="Download Unofficial Transcript", font=("Segoe UI", 10, "bold"), fg="#002d72", bg=WHITE).pack(side="left")
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg=NAV_BG, highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Transcript downloaded", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
 
+    btn_download = tk.Button(footer, text="📥 Download Unofficial Transcript", font=("Segoe UI", 9, "bold"), fg=NAV_BG, bg=WHITE, relief="solid", bd=1, padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_download.pack(side="right")

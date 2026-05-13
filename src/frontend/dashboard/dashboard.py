@@ -52,9 +52,9 @@ nav_btns = {}
 # ── Helper: nav button ─────────────────────────────────────────────────────────
 def _make_nav_btn(parent, text, icon, command=None):
     f = tk.Frame(parent, bg=NAV_BG, cursor="hand2", highlightthickness=0, bd=0)
-    f.pack(fill="x", pady=1)
+    f.pack(fill="x", pady=0)
     inner = tk.Frame(f, bg=NAV_BG, highlightthickness=0, bd=0)
-    inner.pack(fill="x", padx=8, pady=10)
+    inner.pack(fill="x", padx=8, pady=6)
     
     if not hasattr(f, "_image_refs"):
         f._image_refs = []
@@ -241,7 +241,21 @@ def build_dashboard_tab(parent, switch_cb):
 def open_dashboard_window(window, on_logout=None):
     win = tk.Toplevel(window)
     win.title(f"Student Dashboard — EDU SIS")
-    win.geometry("1280x800")
+    
+    # Make it wide and dynamically as tall as the screen allows without capping
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    width = 1440
+    height = min(1000, screen_height - 80)
+    
+    x = int((screen_width / 2) - (width / 2))
+    y = int((screen_height / 2) - (height / 2))
+    
+    # Prevent negative coordinates if screen is smaller than window
+    x = max(0, x)
+    y = max(0, y)
+    
+    win.geometry(f"{width}x{height}+{x}+{y}")
     win.minsize(1100, 720)
     win.configure(bg=NAV_BG)
 
@@ -272,13 +286,26 @@ def open_dashboard_window(window, on_logout=None):
 
     # Logo row
     logo_row = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
-    logo_row.pack(fill="x", padx=18, pady=(24, 16))
+    logo_row.pack(fill="x", padx=18, pady=(16, 8))
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     assets_dir  = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets"))
 
-    tk.Label(logo_row, text="🎓", font=("Segoe UI Emoji", 28),
-             fg=WHITE, bg=NAV_BG).pack(side="left", padx=(0, 12))
+    lbl_logo = tk.Label(logo_row, bg=NAV_BG)
+    lbl_logo.pack(side="left", padx=(0, 12))
+    
+    try:
+        from PIL import Image, ImageTk
+        path = os.path.join(assets_dir, "edu-icon.png")
+        if os.path.exists(path):
+            img = Image.open(path).resize((42, 42), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+            lbl_logo.config(image=photo)
+            lbl_logo.image = photo
+        else:
+            lbl_logo.config(text="🎓", font=("Segoe UI Emoji", 28), fg=WHITE)
+    except Exception:
+        lbl_logo.config(text="🎓", font=("Segoe UI Emoji", 28), fg=WHITE)
 
     text_col = tk.Frame(logo_row, bg=NAV_BG, highlightthickness=0, bd=0)
     text_col.pack(side="left")
@@ -371,15 +398,15 @@ def open_dashboard_window(window, on_logout=None):
 
     # Logout (bottom)
     bottom = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
-    bottom.pack(side="bottom", fill="x", padx=4, pady=14)
+    bottom.pack(side="bottom", fill="x", padx=4, pady=8)
     tk.Frame(bottom, bg="#1e3d7a", height=1,
-             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 10))
+             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 6))
 
     logout_f = tk.Frame(bottom, bg=NAV_BG, cursor="hand2",
                         highlightthickness=0, bd=0)
     logout_f.pack(fill="x")
     lo_inner = tk.Frame(logout_f, bg=NAV_BG, highlightthickness=0, bd=0)
-    lo_inner.pack(fill="x", padx=10, pady=10)
+    lo_inner.pack(fill="x", padx=10, pady=6)
     
     logout_f._image_refs = []
 

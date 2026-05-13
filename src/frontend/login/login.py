@@ -8,10 +8,11 @@ from ttkbootstrap.constants import LEFT, DARK
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
 
-DEMO_USERNAME  = "25-0000"
-DEMO_PASSWORD  = "Demo@Admin12!"
-ADMIN_USERNAME = "admin-0001"
-ADMIN_PASSWORD = "Admin@Pass12!"
+# [DEV ONLY] Easy Login Bypasses - Remove in Production
+DEMO_USERNAME  = "2"
+DEMO_PASSWORD  = "2"
+ADMIN_USERNAME = "1"
+ADMIN_PASSWORD = "1"
 
 
 def open_login_window(window, on_success=None):
@@ -19,6 +20,11 @@ def open_login_window(window, on_success=None):
     # ── Validation ────────────────────────────────────────────────────────────
 
     def user_validation(user):
+        # [DEV ONLY] Bypass validation for quick dev logins
+        if user in [ADMIN_USERNAME, DEMO_USERNAME]:
+            user_error_label.config(text="")
+            return True
+            
         pattern = r"^25-\d{4}$"
         if re.fullmatch(pattern, user):
             user_error_label.config(text="")
@@ -28,6 +34,11 @@ def open_login_window(window, on_success=None):
             return False
 
     def pass_validation(password):
+        # [DEV ONLY] Bypass validation for quick dev logins
+        if password in [ADMIN_PASSWORD, DEMO_PASSWORD]:
+            password_error_label.config(text="")
+            return True
+            
         if len(password) < 12:
             password_error_label.config(text="Password must have at least 12 characters!")
             return False
@@ -50,31 +61,39 @@ def open_login_window(window, on_success=None):
         username = user_input.get()
         password = password_input.get()
 
-        # Admin check first — bypasses student ID format validation
-        if username == ADMIN_USERNAME:
-            if password == ADMIN_PASSWORD:
-                auth_error_label.config(text="")
-                if on_success:
-                    on_success(win, "admin")
-            else:
-                auth_error_label.config(text="Invalid username or password.")
+        # [DEV ONLY] Admin check bypass
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            auth_error_label.config(text="")
+            if on_success:
+                on_success(win, "admin")
+            return
+
+        # [DEV ONLY] Student check bypass
+        if username == DEMO_USERNAME and password == DEMO_PASSWORD:
+            auth_error_label.config(text="")
+            if on_success:
+                on_success(win, "student")
             return
 
         if not user_validation(username) or not pass_validation(password):
             return
 
-        if username == DEMO_USERNAME and password == DEMO_PASSWORD:
-            auth_error_label.config(text="")
-            if on_success:
-                on_success(win, "student")
-        else:
-            auth_error_label.config(text="Invalid username or password.")
+        auth_error_label.config(text="Invalid username or password.")
 
     # ── Window ────────────────────────────────────────────────────────────────
 
     win = Toplevel(window)
     win.title("Enchong Dee University Student Information System")
-    win.geometry("1000x600")
+    
+    # Center the login window
+    width = 1000
+    height = 600
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = max(0, int((screen_width / 2) - (width / 2)))
+    y = max(0, int((screen_height / 2) - (height / 2)))
+    
+    win.geometry(f"{width}x{height}+{x}+{y}")
     win.resizable(False, False)
 
     apply_window_icon(win, calling_file=__file__)
@@ -216,8 +235,8 @@ def open_login_window(window, on_success=None):
 
     tk.Label(
         form,
-        text=f"Demo — user: {DEMO_USERNAME}  |  pass: {DEMO_PASSWORD}",
-        font=(FONT_DEFAULT_NAME, 8),
-        fg="#aaaaaa",
+        text="[DEV MODE] Admin: 1/1 | Student: 2/2 (Remove in Final)",
+        font=(FONT_DEFAULT_NAME, 8, "bold"),
+        fg="#dc3545",
         bg="white",
     ).pack(pady=(10, 0))

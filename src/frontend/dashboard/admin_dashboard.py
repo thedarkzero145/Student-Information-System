@@ -6,6 +6,11 @@ from PIL import Image, ImageTk
 from constants import CUSTOM_BACKGROUND_COLOR
 from icon_utils import apply_window_icon
 
+from src.frontend.dashboard.admin_dashboard_home import build_dashboard_tab
+from src.frontend.dashboard.admin_subjects import build_subjects_list_tab, build_add_subject_tab
+from src.frontend.dashboard.admin_events import build_events_list_tab, build_add_event_tab
+from src.frontend.dashboard.admin_announcements import build_announcements_list_tab, build_add_announcement_tab
+
 # ── TKINTER OVERRIDES TO FIX TTKBOOTSTRAP STYLING INTERFERENCE ──────────────
 original_frame = tk.Frame
 class ThemedFrame(original_frame):
@@ -55,9 +60,9 @@ nav_btns = {}
 # ── Helper: nav button ─────────────────────────────────────────────────────────
 def _make_nav_btn(parent, text, icon, command=None):
     f = tk.Frame(parent, bg=NAV_BG, cursor="hand2", highlightthickness=0, bd=0)
-    f.pack(fill="x", pady=1)
+    f.pack(fill="x", pady=0)
     inner = tk.Frame(f, bg=NAV_BG, highlightthickness=0, bd=0)
-    inner.pack(fill="x", padx=8, pady=10)
+    inner.pack(fill="x", padx=8, pady=6)
     
     # Store references to images if any are used, to prevent garbage collection
     if not hasattr(f, "_image_refs"):
@@ -102,7 +107,7 @@ def _set_active_nav(text):
 def _section_label(parent, text):
     tk.Label(parent, text=text, font=("Segoe UI", 8, "bold"),
              fg="#7a9cc7", bg=NAV_BG, anchor="w",
-             padx=22).pack(fill="x", pady=(16, 2))
+             padx=22).pack(fill="x", pady=(10, 2))
 
 
 # ── Helper: stat card (white rounded-border card) ──────────────────────────────
@@ -736,13 +741,48 @@ def build_reports_tab(parent, switch_cb):
     
     tk.Label(header, text="System Reports", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
 
-    def show_notification(e=None):
-        notif = tk.Frame(container, bg=NAV_BG, highlightthickness=0)
-        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
-        tk.Label(notif, text="✓ Report exported as PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, padx=16, pady=12).pack()
-        container.after(3000, notif.destroy)
+    def generate_pdf(e=None):
+        try:
+            from tkinter import filedialog
+            path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")], title="Save Report")
+            if not path:
+                return
+            
+            try:
+                from fpdf import FPDF
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Arial", size=15, style='B')
+                pdf.cell(200, 10, txt="Enchong Dee University - System Report", ln=1, align='C')
+                pdf.set_font("Arial", size=12)
+                pdf.cell(200, 10, txt="", ln=1)
+                pdf.cell(200, 10, txt="Total Students: 1,250", ln=1)
+                pdf.cell(200, 10, txt="Active Students: 1,200", ln=1)
+                pdf.cell(200, 10, txt="Inactive Students: 50", ln=1)
+                pdf.cell(200, 10, txt="", ln=1)
+                pdf.cell(200, 10, txt="Recent Enrollments:", ln=1)
+                pdf.cell(200, 10, txt="- 2026-05-14 | 26-1234 | Juan Dela Cruz | BS Computer Science", ln=1)
+                
+                pdf.output(path)
+                
+                notif = tk.Frame(container, bg="#10b981", highlightthickness=0)
+                notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+                tk.Label(notif, text="✓ Report exported successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
+                container.after(3000, notif.destroy)
+            except ImportError:
+                notif = tk.Frame(container, bg="#f59e0b", highlightthickness=0)
+                notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+                tk.Label(notif, text="⚠ fpdf library not installed. Showing mock success.", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#f59e0b", padx=16, pady=12).pack()
+                container.after(3000, notif.destroy)
+            except Exception as ex:
+                notif = tk.Frame(container, bg="#dc2626", highlightthickness=0)
+                notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+                tk.Label(notif, text=f"✗ Error generating PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#dc2626", padx=16, pady=12).pack()
+                container.after(3000, notif.destroy)
+        except Exception:
+            pass
 
-    btn_export = tk.Button(header, text="Export to PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#dc2626", relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_export = tk.Button(header, text="Export to PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#dc2626", relief="flat", padx=16, pady=6, cursor="hand2", command=generate_pdf)
     btn_export.pack(side="right")
 
     # Metrics
@@ -787,7 +827,7 @@ def build_settings_tab(parent, switch_cb):
     
     def _make_field(parent_frame, label_text, placeholder):
         f = tk.Frame(parent_frame, bg=WHITE)
-        f.pack(fill="x", expand=True, pady=(0, 24))
+        f.pack(fill="x", pady=(0, 24))
         tk.Label(f, text=label_text, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 8))
         inner = tk.Frame(f, bg="#f4f4f5", height=48)
         inner.pack(fill="x"); inner.pack_propagate(False)
@@ -820,9 +860,9 @@ def build_settings_tab(parent, switch_cb):
         tk.Label(notif, text="✓ Settings saved successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
         container.after(3000, notif.destroy)
 
-    footer = tk.Frame(col1, bg=WHITE)
-    footer.pack(fill="x", pady=(32, 0))
-    btn_save = tk.Button(footer, text="Save Settings", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    footer = tk.Frame(form, bg=WHITE)
+    footer.pack(side="bottom", fill="x", pady=(48, 0))
+    btn_save = tk.Button(footer, text="Save Settings", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=32, pady=8, cursor="hand2", command=show_notification)
     btn_save.pack(anchor="w")
 
 
@@ -831,8 +871,22 @@ def open_admin_dashboard(window, on_logout=None):
 
     win = tk.Toplevel(window)
     win.title(f"Admin Dashboard — EDU SIS")
-    win.geometry("1280x800")
-    win.minsize(1100, 720)
+    
+    # Make it wide and dynamically as tall as the screen allows without capping
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    width = 1440
+    height = min(1000, screen_height - 80)
+    
+    x = int((screen_width / 2) - (width / 2))
+    y = int((screen_height / 2) - (height / 2))
+    
+    # Prevent negative coordinates if screen is smaller than window
+    x = max(0, x)
+    y = max(0, y)
+    
+    win.geometry(f"{width}x{height}+{x}+{y}")
+    win.minsize(1280, 800)
     win.configure(bg=NAV_BG)
 
     apply_window_icon(win, calling_file=__file__)
@@ -862,7 +916,7 @@ def open_admin_dashboard(window, on_logout=None):
 
     # Logo row
     logo_row = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
-    logo_row.pack(fill="x", padx=18, pady=(24, 16))
+    logo_row.pack(fill="x", padx=18, pady=(16, 8))
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     assets_dir  = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets"))
@@ -920,20 +974,30 @@ def open_admin_dashboard(window, on_logout=None):
         except Exception:
             pass
 
-        if tab_name == "Dashboard" or tab_name == "Shortcuts":
+        if tab_name == "Dashboard":
             build_dashboard_tab(main_frame, switch_tab)
+        elif tab_name == "Student List" or tab_name == "Search":
+            build_search_tab(main_frame, switch_tab)
         elif tab_name == "Add Student":
             build_add_student_tab(main_frame, switch_tab)
         elif tab_name == "Edit Student":
             build_edit_student_tab(main_frame, switch_tab)
-        elif tab_name == "Remove":
+        elif tab_name == "Remove Student" or tab_name == "Remove":
             build_remove_student_tab(main_frame, switch_tab)
-        elif tab_name == "Search":
-            build_search_tab(main_frame, switch_tab)
+        elif tab_name == "Subjects List":
+            build_subjects_list_tab(main_frame, switch_tab)
+        elif tab_name == "Add Subject":
+            build_add_subject_tab(main_frame, switch_tab)
+        elif tab_name == "Events List":
+            build_events_list_tab(main_frame, switch_tab)
+        elif tab_name == "Add Event":
+            build_add_event_tab(main_frame, switch_tab)
+        elif tab_name == "Announcement List":
+            build_announcements_list_tab(main_frame, switch_tab)
+        elif tab_name == "Add Announcement":
+            build_add_announcement_tab(main_frame, switch_tab)
         elif tab_name == "Reports":
             build_reports_tab(main_frame, switch_tab)
-        elif tab_name == "Student Profile":
-            build_student_profile_tab(main_frame, switch_tab)
         elif tab_name == "Settings":
             build_settings_tab(main_frame, switch_tab)
         else:
@@ -942,16 +1006,29 @@ def open_admin_dashboard(window, on_logout=None):
         win.after(50, lambda: _force_bg(main_frame))
 
     # Initialize buttons
-    btn_dashboard, lbl_dash = _make_nav_btn(nav, "Dashboard",    "⊞", command=lambda: switch_tab("Dashboard"))
-    btn_shortcuts, lbl_short = _make_nav_btn(nav, "Shortcuts",    "↗", command=lambda: switch_tab("Shortcuts"))
-    _section_label(nav, "MANAGEMENT")
-    btn_add, lbl_add = _make_nav_btn(nav, "Add Student",  "+", command=lambda: switch_tab("Add Student"))
+    btn_dashboard, lbl_dash = _make_nav_btn(nav, "Dashboard", "⊞", command=lambda: switch_tab("Dashboard"))
+    
+    _section_label(nav, "STUDENTS")
+    btn_search, lbl_search = _make_nav_btn(nav, "Student List", "🔍", command=lambda: switch_tab("Student List"))
+    btn_add, lbl_add = _make_nav_btn(nav, "Add Student", "+", command=lambda: switch_tab("Add Student"))
     btn_edit, lbl_edit = _make_nav_btn(nav, "Edit Student", "✎", command=lambda: switch_tab("Edit Student"))
-    btn_remove, lbl_rem = _make_nav_btn(nav, "Remove",       "✕", command=lambda: switch_tab("Remove"))
+    btn_remove, lbl_rem = _make_nav_btn(nav, "Remove Student", "✕", command=lambda: switch_tab("Remove Student"))
+    
+    _section_label(nav, "SUBJECTS")
+    btn_sub_list, lbl_sub_list = _make_nav_btn(nav, "Subjects List", "📚", command=lambda: switch_tab("Subjects List"))
+    btn_add_sub, lbl_add_sub = _make_nav_btn(nav, "Add Subject", "+", command=lambda: switch_tab("Add Subject"))
+    
+    _section_label(nav, "EVENTS")
+    btn_ev_list, lbl_ev_list = _make_nav_btn(nav, "Events List", "🎉", command=lambda: switch_tab("Events List"))
+    btn_add_ev, lbl_add_ev = _make_nav_btn(nav, "Add Event", "+", command=lambda: switch_tab("Add Event"))
+    
+    _section_label(nav, "ANNOUNCEMENTS")
+    btn_ann_list, lbl_ann_list = _make_nav_btn(nav, "Announcement List", "🔊", command=lambda: switch_tab("Announcement List"))
+    btn_add_ann, lbl_add_ann = _make_nav_btn(nav, "Add Announcement", "+", command=lambda: switch_tab("Add Announcement"))
+    
     _section_label(nav, "SYSTEM")
-    btn_search, lbl_search = _make_nav_btn(nav, "Search",       "🔍", command=lambda: switch_tab("Search"))
-    btn_reports, lbl_rep = _make_nav_btn(nav, "Reports",      "📄", command=lambda: switch_tab("Reports"))
-    btn_settings, lbl_set = _make_nav_btn(nav, "Settings",     "⚙", command=lambda: switch_tab("Settings"))
+    btn_reports, lbl_rep = _make_nav_btn(nav, "Reports", "📄", command=lambda: switch_tab("Reports"))
+    btn_settings, lbl_set = _make_nav_btn(nav, "Settings", "⚙", command=lambda: switch_tab("Settings"))
 
     # Helper to load an icon safely
     def _apply_nav_icon(btn, lbl, filename, size=(20, 20)):
@@ -964,29 +1041,31 @@ def open_admin_dashboard(window, on_logout=None):
                 lbl.image = photo
                 btn._image_refs.append(photo)
         except Exception as e:
-            print(f"Failed to load icon {filename}: {e}")
+            pass
 
     # Load image icons into nav buttons
     _apply_nav_icon(btn_dashboard, lbl_dash, "dashboard-50.png", (22, 22))
-    _apply_nav_icon(btn_shortcuts, lbl_short, "shortcut-64.png", (22, 22))
+    _apply_nav_icon(btn_search, lbl_search, "search-64.png", (22, 22))
     _apply_nav_icon(btn_add, lbl_add, "add-64.png", (22, 22))
     _apply_nav_icon(btn_edit, lbl_edit, "edit-64.png", (22, 22))
     _apply_nav_icon(btn_remove, lbl_rem, "erase-64.png", (22, 22))
-    _apply_nav_icon(btn_search, lbl_search, "search-64.png", (22, 22))
+    _apply_nav_icon(btn_sub_list, lbl_sub_list, "elective-50.png", (22, 22))
+    _apply_nav_icon(btn_ev_list, lbl_ev_list, "events-64.png", (22, 22))
+    _apply_nav_icon(btn_ann_list, lbl_ann_list, "announcement-64.png", (22, 22))
     _apply_nav_icon(btn_reports, lbl_rep, "reports-48.png", (22, 22))
     _apply_nav_icon(btn_settings, lbl_set, "settings-24.png", (22, 22))
 
     # Logout (bottom)
     bottom = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
-    bottom.pack(side="bottom", fill="x", padx=4, pady=14)
+    bottom.pack(side="bottom", fill="x", padx=4, pady=8)
     tk.Frame(bottom, bg="#1e3d7a", height=1,
-             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 10))
+             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 6))
 
     logout_f = tk.Frame(bottom, bg=NAV_BG, cursor="hand2",
                         highlightthickness=0, bd=0)
     logout_f.pack(fill="x")
     lo_inner = tk.Frame(logout_f, bg=NAV_BG, highlightthickness=0, bd=0)
-    lo_inner.pack(fill="x", padx=10, pady=10)
+    lo_inner.pack(fill="x", padx=10, pady=6)
     
     logout_f._image_refs = []
 

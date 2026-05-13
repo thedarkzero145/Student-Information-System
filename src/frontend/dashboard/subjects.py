@@ -2,39 +2,39 @@ import tkinter as tk
 
 NAV_BG        = "#001f5b"
 WHITE         = "#ffffff"
-CONTENT_BG    = "#edf0f5"
 TEXT_PRIMARY  = "#111827"
 TEXT_MUTED    = "#6b7280"
-CARD_BG       = "#ffffff"
 CARD_BORDER   = "#e2e8f0"
 
 def build_subjects_tab(parent, switch_cb):
     # Main container
-    container = tk.Frame(parent, bg=CONTENT_BG)
-    container.pack(fill="both", expand=True, padx=32, pady=32)
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
 
     # --- TOP ROW ---
-    top_row = tk.Frame(container, bg=CONTENT_BG)
-    top_row.pack(fill="x", pady=(0, 24))
+    top_row = tk.Frame(container, bg=WHITE)
+    top_row.pack(fill="x", pady=(48, 32), padx=48)
     
-    # Export Schedule Button
-    btn_wrap = tk.Frame(top_row, bg=WHITE, highlightthickness=1, highlightbackground=CARD_BORDER, cursor="hand2")
-    btn_wrap.pack(side="right")
+    tk.Label(top_row, text="Enrolled Subjects", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
     
-    inner_btn = tk.Frame(btn_wrap, bg=WHITE, padx=12, pady=6)
-    inner_btn.pack()
-    tk.Label(inner_btn, text="📅", font=("Segoe UI Emoji", 10), fg="#1e3a8a", bg=WHITE).pack(side="left", padx=(0, 6))
-    tk.Label(inner_btn, text="Export Schedule", font=("Segoe UI", 9, "bold"), fg="#1e3a8a", bg=WHITE).pack(side="left")
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg=NAV_BG, highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Schedule exported as PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    btn_export = tk.Button(top_row, text="📅 Export Schedule", font=("Segoe UI", 9, "bold"), fg=NAV_BG, bg=WHITE, relief="solid", bd=1, padx=16, pady=4, cursor="hand2", command=show_notification)
+    btn_export.pack(side="right")
 
     # --- GRID OF CARDS ---
-    grid_container = tk.Frame(container, bg=CONTENT_BG)
-    grid_container.pack(fill="both", expand=True)
+    grid_container = tk.Frame(container, bg=WHITE)
+    grid_container.pack(fill="both", expand=True, padx=48)
     
     subjects_data = [
         {
             "code": "CS 301",
             "status": "Enrolled",
-            "status_color": "#22c55e",
+            "status_color": "#16a34a",
             "title": "Data Structures and\nAlgorithms",
             "prof": "Prof. Alan Turing",
             "time_day": "Mon / Wed",
@@ -46,7 +46,7 @@ def build_subjects_tab(parent, switch_cb):
         {
             "code": "MTH 210",
             "status": "Enrolled",
-            "status_color": "#22c55e",
+            "status_color": "#16a34a",
             "title": "Linear Algebra & Matrix\nTheory",
             "prof": "Dr. Katherine Johnson",
             "time_day": "Tue / Thu",
@@ -58,7 +58,7 @@ def build_subjects_tab(parent, switch_cb):
         {
             "code": "ENG 105",
             "status": "Waitlisted",
-            "status_color": "#eab308",
+            "status_color": "#d97706",
             "title": "Modern Literature\nSemantics",
             "prof": "Prof. Virginia Woolf",
             "time_day": "Friday",
@@ -79,15 +79,15 @@ def build_subjects_tab(parent, switch_cb):
         # Thick blue border at top
         tk.Frame(card_outer, bg=NAV_BG, height=6).pack(fill="x")
         
-        card_body = tk.Frame(card_outer, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
+        card_body = tk.Frame(card_outer, bg=WHITE, highlightthickness=1, highlightbackground=CARD_BORDER)
         card_body.pack(fill="both", expand=True)
         
         # --- Card Content ---
-        content = tk.Frame(card_body, bg=CARD_BG)
+        content = tk.Frame(card_body, bg=WHITE)
         content.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Tags row
-        tags_row = tk.Frame(content, bg=CARD_BG)
+        tags_row = tk.Frame(content, bg=WHITE)
         tags_row.pack(fill="x", pady=(0, 16))
         
         # Code pill
@@ -98,49 +98,44 @@ def build_subjects_tab(parent, switch_cb):
         status_f.pack(side="right")
         tk.Label(status_f, text="●", font=("Segoe UI", 8), fg=data["status_color"], bg=status_f["bg"], padx=4).pack(side="left")
         tk.Label(status_f, text=data["status"], font=("Segoe UI", 8, "bold"), fg="#166534" if data["status"] == "Enrolled" else "#854d0e", bg=status_f["bg"], padx=4, pady=4).pack(side="left")
-        
+
         # Title
-        title_f = tk.Frame(content, bg=CARD_BG, height=48)
-        title_f.pack(fill="x", pady=(0, 8))
+        title_f = tk.Frame(content, bg=WHITE, height=54)
+        title_f.pack(fill="x", pady=(0, 16))
         title_f.pack_propagate(False)
-        tk.Label(title_f, text=data["title"], font=("Segoe UI", 12, "bold"), fg="#1e3a8a", bg=CARD_BG, justify="left").pack(anchor="w")
+        tk.Label(title_f, text=data["title"], font=("Segoe UI", 12, "bold"), fg="#1e3a8a", bg=WHITE, justify="left").pack(anchor="w")
         
-        # Prof
-        prof_f = tk.Frame(content, bg=CARD_BG)
-        prof_f.pack(fill="x", pady=(0, 16))
-        tk.Label(prof_f, text="👤", font=("Segoe UI Emoji", 8), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left", padx=(0, 4))
-        tk.Label(prof_f, text=data["prof"], font=("Segoe UI", 9), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left")
+        # Professor
+        prof_f = tk.Frame(content, bg=WHITE)
+        prof_f.pack(fill="x", pady=(0, 12))
+        tk.Label(prof_f, text="👤", font=("Segoe UI Emoji", 8), fg=TEXT_MUTED, bg=WHITE).pack(side="left", padx=(0, 4))
+        tk.Label(prof_f, text=data["prof"], font=("Segoe UI", 9), fg=TEXT_MUTED, bg=WHITE).pack(side="left")
         
         # Divider
         tk.Frame(content, bg=CARD_BORDER, height=1).pack(fill="x", pady=(0, 16))
         
         # Schedule Info
-        sched_f = tk.Frame(content, bg=CARD_BG)
-        sched_f.pack(fill="x", pady=(0, 16))
+        info_f = tk.Frame(content, bg=WHITE)
+        info_f.pack(fill="x", pady=(0, 16))
         
-        # Time
-        time_f = tk.Frame(sched_f, bg=CARD_BG)
-        time_f.pack(fill="x", pady=(0, 12))
-        tk.Label(time_f, text="🕒", font=("Segoe UI Emoji", 9), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left", anchor="n", padx=(0, 6))
-        time_txt_f = tk.Frame(time_f, bg=CARD_BG)
+        time_f = tk.Frame(info_f, bg=WHITE)
+        time_f.pack(side="left", fill="both", expand=True)
+        tk.Label(time_f, text="🕒", font=("Segoe UI Emoji", 9), fg=TEXT_MUTED, bg=WHITE).pack(side="left", anchor="n", padx=(0, 6))
+        time_txt_f = tk.Frame(time_f, bg=WHITE)
         time_txt_f.pack(side="left")
-        tk.Label(time_txt_f, text=data["time_day"], font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=CARD_BG).pack(anchor="w")
-        tk.Label(time_txt_f, text=data["time_span"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=CARD_BG).pack(anchor="w")
+        tk.Label(time_txt_f, text=data["time_day"], font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w")
+        tk.Label(time_txt_f, text=data["time_span"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=WHITE).pack(anchor="w")
         
-        # Location
-        loc_f = tk.Frame(sched_f, bg=CARD_BG)
-        loc_f.pack(fill="x")
-        tk.Label(loc_f, text="🏢", font=("Segoe UI Emoji", 9), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left", anchor="n", padx=(0, 6))
-        loc_txt_f = tk.Frame(loc_f, bg=CARD_BG)
+        loc_f = tk.Frame(info_f, bg=WHITE)
+        loc_f.pack(side="left", fill="both", expand=True)
+        tk.Label(loc_f, text="🏢", font=("Segoe UI Emoji", 9), fg=TEXT_MUTED, bg=WHITE).pack(side="left", anchor="n", padx=(0, 6))
+        loc_txt_f = tk.Frame(loc_f, bg=WHITE)
         loc_txt_f.pack(side="left")
-        tk.Label(loc_txt_f, text=data["loc_bldg"], font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=CARD_BG).pack(anchor="w")
-        tk.Label(loc_txt_f, text=data["loc_room"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=CARD_BG).pack(anchor="w")
-        
-        # Divider
-        tk.Frame(content, bg=CARD_BORDER, height=1).pack(fill="x", pady=(16, 16))
+        tk.Label(loc_txt_f, text=data["loc_bldg"], font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w")
+        tk.Label(loc_txt_f, text=data["loc_room"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=WHITE).pack(anchor="w")
         
         # Footer
-        footer_f = tk.Frame(content, bg=CARD_BG)
-        footer_f.pack(fill="x")
-        tk.Label(footer_f, text=data["credits"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left")
-        tk.Label(footer_f, text="View Syllabus ➔", font=("Segoe UI", 8, "bold"), fg="#1e3a8a", bg=CARD_BG, cursor="hand2").pack(side="right")
+        footer_f = tk.Frame(content, bg=WHITE)
+        footer_f.pack(fill="x", side="bottom")
+        tk.Label(footer_f, text=data["credits"], font=("Segoe UI", 8), fg=TEXT_MUTED, bg=WHITE).pack(side="left")
+        tk.Label(footer_f, text="View Syllabus ➔", font=("Segoe UI", 8, "bold"), fg="#1e3a8a", bg=WHITE, cursor="hand2").pack(side="right")
