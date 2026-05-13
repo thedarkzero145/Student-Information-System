@@ -116,9 +116,19 @@ def _dept_bar(parent, dept_name, count, total):
     )
 
 
+DASHBOARD_VERSION = "v4-canvas-sidebar"
+
+
 def open_admin_dashboard(window, on_logout=None):
+    print("=" * 60)
+    print(f"  Admin Dashboard loading — {DASHBOARD_VERSION}")
+    print(f"  Window: 1500x900   Sidebar: 270px Canvas-painted navy")
+    print(f"  If you don't see '{DASHBOARD_VERSION}' in the title bar,")
+    print(f"  Python is loading an old .pyc from __pycache__")
+    print("=" * 60)
+
     win = tk.Toplevel(window)
-    win.title("Admin Dashboard — EDU SIS")
+    win.title(f"Admin Dashboard — EDU SIS — {DASHBOARD_VERSION}")
     win.geometry("1500x900")
     win.minsize(1280, 760)
     win.configure(bg=NAV_BG)
