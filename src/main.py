@@ -28,9 +28,16 @@ def main() -> None:
         window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
         window.withdraw()
 
-        def on_login_success(login_win):
+        def on_login_success(login_win, username, password, remember_login):
                 login_win.destroy()
-                open_dashboard_window(window)
+                open_dashboard_window(
+                        window,
+                        {
+                                "username": username,
+                                "password": password,
+                                "remember": remember_login,
+                        }
+                )
 
         open_login_window(window, on_success=on_login_success)
 

@@ -8,10 +8,12 @@ from ttkbootstrap.icons import Emoji
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from main import on_hover, on_leave
 from icon_utils import apply_window_icon
+from src.backend.backend import clear_login_credentials, save_login_credentials
 
 
-def open_dashboard_window(window):
+def open_dashboard_window(window, login_credentials=None):
     root_window = window
+    login_credentials = login_credentials or {}
     window = Toplevel(window)
     window.title("Dashboard")
     window.geometry("1000x600")
@@ -179,13 +181,33 @@ def open_dashboard_window(window):
     def logout():
         from src.frontend.login.login import open_login_window
 
+        if login_credentials.get("remember"):
+            save_login_credentials(
+                login_credentials.get("username", ""),
+                login_credentials.get("password", ""),
+            )
+        else:
+            clear_login_credentials()
+
         window.destroy()
 
-        def on_login_success(login_win):
+        def on_login_success(login_win, username, password, remember_login):
             login_win.destroy()
-            open_dashboard_window(root_window)
+            open_dashboard_window(
+                root_window,
+                {
+                    "username": username,
+                    "password": password,
+                    "remember": remember_login,
+                }
+            )
 
-        open_login_window(root_window, on_success=on_login_success)
+        open_login_window(
+            root_window,
+            on_success=on_login_success,
+            load_saved_credentials=True,
+        )
+
 
     dashboard_btn.config(command=lambda: switch_page(dashboard_page))
     grades_btn.config(command=lambda: switch_page(grades_page))
