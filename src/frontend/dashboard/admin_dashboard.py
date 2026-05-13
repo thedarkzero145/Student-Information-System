@@ -138,7 +138,7 @@ def open_admin_dashboard(window, on_logout=None):
     assets_dir  = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets"))
 
     try:
-        _img   = Image.open(os.path.join(assets_dir, "edu-icon.png")).resize((54, 54), Image.LANCZOS)
+        _img   = Image.open(os.path.join(assets_dir, "edu-crest-white.png")).resize((60, 60), Image.LANCZOS)
         _photo = ImageTk.PhotoImage(_img)
         lbl_logo = tk.Label(logo_row, image=_photo, bg=NAV_BG)
         lbl_logo.image = _photo
@@ -353,19 +353,33 @@ def open_admin_dashboard(window, on_logout=None):
     right_panel.pack(side="left", fill="both")
     right_panel.pack_propagate(False)
 
-    # Campus card
-    campus = tk.Frame(right_panel, bg="#0d2447", height=155)
-    campus.pack(fill="x", pady=(0, 14))
-    campus.pack_propagate(False)
+    # Campus card — actual campus night photo
+    campus_h = 160
+    campus_frame = tk.Frame(right_panel, bg="#0d2447", height=campus_h)
+    campus_frame.pack(fill="x", pady=(0, 14))
+    campus_frame.pack_propagate(False)
 
-    campus_overlay = tk.Frame(campus, bg="#0d1f40")
+    try:
+        _camp_raw   = Image.open(os.path.join(assets_dir, "campus.png"))
+        _camp_ratio = _camp_raw.width / _camp_raw.height
+        _camp_w     = int(campus_h * _camp_ratio)
+        _camp_img   = _camp_raw.resize((_camp_w, campus_h), Image.LANCZOS)
+        _camp_photo = ImageTk.PhotoImage(_camp_img)
+        campus_lbl  = tk.Label(campus_frame, image=_camp_photo, bg="#0d2447")
+        campus_lbl.image = _camp_photo
+        campus_lbl.place(relx=0, rely=0, relwidth=1, relheight=1)
+    except Exception:
+        pass
+
+    # Semi-transparent gradient overlay at the bottom via a dark frame
+    campus_overlay = tk.Frame(campus_frame, bg="#0d1732")
     campus_overlay.place(relx=0, rely=0.52, relwidth=1, relheight=0.50)
     tk.Label(campus_overlay, text="Enchong Dee University Main Campus",
-             font=("Segoe UI", 9, "bold"), fg=WHITE, bg="#0d1f40",
+             font=("Segoe UI", 9, "bold"), fg=WHITE, bg="#0d1732",
              anchor="w", wraplength=270, justify="left").pack(anchor="w", padx=12, pady=(6, 2))
     tk.Label(campus_overlay,
              text="Summer 2026 Enrollment is now at 92% capacity.",
-             font=("Segoe UI", 8), fg="#aab4c8", bg="#0d1f40",
+             font=("Segoe UI", 8), fg="#aab4c8", bg="#0d1732",
              anchor="w", wraplength=270, justify="left").pack(anchor="w", padx=12)
 
     # Department Load card
