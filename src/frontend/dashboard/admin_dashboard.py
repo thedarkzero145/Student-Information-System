@@ -162,9 +162,7 @@ def _dept_bar(parent, dept_name, count, total):
 
 # ── Main entry ─────────────────────────────────────────────────────────────────
 def open_admin_dashboard(window, on_logout=None):
-    print("=" * 60)
-    print(f"  Admin Dashboard — {DASHBOARD_VERSION}")
-    print("=" * 60)
+
 
     win = tk.Toplevel(window)
     win.title(f"Admin Dashboard — EDU SIS")
