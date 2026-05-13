@@ -1,98 +1,144 @@
-# Enchong Dee University — Student Information System
+# Enchong Dee University Student Information System
 
-A desktop application built as our **CC3 Intermediate Programming Final Project**. This system was designed to give students and administrators a clean, intuitive way to manage and view student academic records.
+A desktop application for managing student academic records. Built as a CC3 Intermediate Programming Final Project.
 
----
-
-## What is this?
-
-This is a fully functional **Student Information System (SIS)** for Enchong Dee University. It supports two types of users — students and administrators — each with their own dedicated dashboard experience tailored to their role.
-
-We built this from the ground up using Python, focusing on a clean UI, solid structure, and a smooth user experience that feels professional without being overly complicated.
+This system is for universities that need a simple way for students to view their grades, schedule, and announcements, and for administrators to manage student data, subjects, events, and reports.
 
 ---
 
 ## Features
 
-### 🔐 Login System
-- Secure login for both **students** and **administrators**
-- Input validation with helpful inline error messages
-- Automatically routes users to their respective dashboard based on role
+### Login System
 
-### 🎓 Student Dashboard
-- Personalized welcome banner with student name, program, and ID
-- **Today's Schedule** — a live timeline view of the student's classes for the day
-- **Motivational Quote** panel
-- At-a-glance stat cards: Grade, Attendance, and Credits Earned
-- Navigation tabs for Grades, Subjects, Announcements, Events, and Settings
+- Separate login flow for students and administrators.
+- Input validation shows inline error messages before submission.
+- After login, users are sent to the correct dashboard for their role.
 
-### 🛠️ Admin Dashboard
-- Overview of total, active, and inactive student counts
-- Full **Students Table** — browse and search student records at a glance
-- **Student Profile View** — detailed academic profile for any selected student, including major, advisor, CGPA, and credits
-- Department load breakdown with visual progress bars
-- Navigation tabs for adding, editing, and removing student records
+### Student Dashboard
 
----
+- Shows your name, student ID, and program at the top.
+- View your classes for the day on a schedule timeline.
+- See your current grade average, attendance, and credits earned.
+- Tabs for Grades, Subjects, Announcements, Events, and Settings.
 
-## Tech Stack
+### Admin Dashboard
 
-| Tool | Purpose |
-|---|---|
-| **Python 3.11+** | Core language |
-| **Tkinter** | GUI framework (built into Python) |
-| **ttkbootstrap** | Modern themed widget styling |
-| **Pillow (PIL)** | Icon and image rendering |
-| **SQLite** | Student data storage |
+- Overview cards showing total students, active students, and inactive students.
+- A full students table with search and filter by course, year level, and status.
+- Add, edit, and remove student records.
+- Manage subjects, campus events, and announcements.
+- Generate and export a system report as a PDF from the Reports tab.
+- Department load breakdown with visual progress bars.
+- System settings for academic year and semester configuration.
 
 ---
 
 ## How to Run
 
-**1. Make sure Python 3.11+ is installed**
+**Step 1. Check that Python 3.11 or newer is installed.**
 
 ```bash
 python --version
 ```
 
-**2. Install dependencies**
+If the output shows a version below 3.11, download the latest Python from https://python.org before continuing.
+
+**Step 2. Open a terminal in the project root folder.** This is the folder that contains `src/` and `assets/`. If you are inside `src/`, go one level up.
+
+**Step 3. Install the required packages.**
 
 ```bash
-pip install ttkbootstrap pillow
+pip install ttkbootstrap pillow fpdf
 ```
 
-**3. Run the app from the project root**
+**Step 4. Run the application.**
 
 ```bash
 python src/main.py
 ```
 
-That's it. The login window will appear and you're good to go.
+The login window will appear in the center of your screen.
 
 ---
 
 ## Login Credentials
 
+> [!WARNING]
+> The credentials below are for development and testing only. They will be removed before the final release.
+
 | Role | Username | Password |
 |---|---|---|
-| Admin | `admin-0001` | `Admin@Pass12!` |
-| Student | `25-0000` | `Demo@Admin12!` |
+| Admin | `1` | `1` |
+| Student | `2` | `2` |
+
+---
+
+## Project Structure
+
+```
+Student-Information-System/
+  assets/           # Icons and images used by the app
+  src/
+    main.py         # Entry point. Run this file to start the app.
+    constants.py    # Shared color and font constants
+    icon_utils.py   # Window icon helper
+    frontend/
+      login/
+        login.py    # Login screen
+      dashboard/
+        dashboard.py            # Student dashboard
+        admin_dashboard.py      # Admin dashboard and navigation
+        admin_dashboard_home.py # Admin overview with charts
+        admin_subjects.py       # Subject list and add form
+        admin_events.py         # Events list and add form
+        admin_announcements.py  # Announcements list and add form
+        settings.py             # Settings tab (student)
+        grade.py                # Grades tab
+        subjects.py             # Subjects tab
+        announcements.py        # Announcements tab
+        events.py               # Events tab
+```
 
 ---
 
 ## Troubleshooting
 
 **`ModuleNotFoundError: No module named 'ttkbootstrap'`**
-Run `pip install ttkbootstrap pillow` and try again.
 
-**The app closes immediately or doesn't open**
-Make sure you're running from the project root directory: `python src/main.py`
+You skipped Step 3. Run the install command and try again.
 
-**Icons aren't showing**
-Ensure the `assets/` folder is present in the project root and contains the icon PNG files.
+```bash
+pip install ttkbootstrap pillow fpdf
+```
+
+**`ModuleNotFoundError: No module named 'constants'`**
+
+You are running the app from inside the `src/` folder. Go back to the project root and run it as `python src/main.py`, not `python main.py`.
+
+**The app closes immediately after opening**
+
+Same as above. Make sure your terminal is in the project root, not inside `src/`.
+
+**Icons are not showing**
+
+The `assets/` folder must be present in the project root. If you deleted or moved it, the app will still run but icons will fall back to text characters. Restore the folder from the repository.
+
+**`pip` is not recognized**
+
+On some Windows installs, you need to use the full Python path:
+
+```bash
+C:/Users/YourName/AppData/Local/Programs/Python/Python311/python.exe -m pip install ttkbootstrap pillow fpdf
+```
+
+Replace `YourName` with your Windows username.
+
+**The PDF export button does nothing**
+
+Make sure `fpdf` is installed. Run `pip install fpdf` and restart the app.
 
 ---
 
-## The Team
+## Project Info
 
-Built with 💙 by the CC3 group for Enchong Dee University SIS — Final Project, AY 2025–2026.
+CC3 Intermediate Programming Final Project, AY 2025-2026.
