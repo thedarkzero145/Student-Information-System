@@ -5,6 +5,11 @@ from PIL import Image, ImageTk
 
 from constants import CUSTOM_BACKGROUND_COLOR
 from icon_utils import apply_window_icon
+from src.frontend.dashboard.grade import build_grades_tab
+from src.frontend.dashboard.subjects import build_subjects_tab
+from src.frontend.dashboard.announcements import build_announcements_tab
+from src.frontend.dashboard.events import build_events_tab
+from src.frontend.dashboard.settings import build_settings_tab
 
 # ── TKINTER OVERRIDES TO FIX TTKBOOTSTRAP STYLING INTERFERENCE ──────────────
 original_frame = tk.Frame
@@ -228,35 +233,9 @@ def build_dashboard_tab(parent, switch_cb):
     c3 = _navy_stat(row3, "≡", "Credits Earned", "18.0 Units")
     c3.pack_configure(side="left", fill="both", expand=True, padx=0)
 
-def build_grades_tab(parent, switch_cb):
-    tk.Label(parent, text="Grades", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Grades content will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
 
-def build_subjects_tab(parent, switch_cb):
-    tk.Label(parent, text="Subjects", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Subjects content will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
 
-def build_announcements_tab(parent, switch_cb):
-    tk.Label(parent, text="Announcements", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Announcements content will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
 
-def build_events_tab(parent, switch_cb):
-    tk.Label(parent, text="Events", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Events content will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
-
-def build_settings_tab(parent, switch_cb):
-    tk.Label(parent, text="Settings", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Settings content will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
 
 # ── Main entry ─────────────────────────────────────────────────────────────────
 def open_dashboard_window(window, on_logout=None):
@@ -332,18 +311,25 @@ def open_dashboard_window(window, on_logout=None):
         _set_active_nav(tab_name)
 
         if tab_name == "Dashboard":
+            title_lbl.config(text="Dashboard")
             build_dashboard_tab(main_frame, switch_tab)
         elif tab_name == "Grades":
+            title_lbl.config(text="Grades")
             build_grades_tab(main_frame, switch_tab)
         elif tab_name == "Subjects":
+            title_lbl.config(text="Enrolled Subjects")
             build_subjects_tab(main_frame, switch_tab)
         elif tab_name == "Announcements":
+            title_lbl.config(text="Announcements")
             build_announcements_tab(main_frame, switch_tab)
         elif tab_name == "Events":
+            title_lbl.config(text="Events")
             build_events_tab(main_frame, switch_tab)
         elif tab_name == "Settings":
+            title_lbl.config(text="Settings")
             build_settings_tab(main_frame, switch_tab)
         else:
+            title_lbl.config(text=tab_name)
             tk.Label(main_frame, text=f"{tab_name}\n(Under Construction)", font=("Segoe UI", 20), fg=TEXT_MUTED, bg=CONTENT_BG, justify="center").pack(expand=True)
             
         win.after(50, lambda: _force_bg(main_frame))
@@ -433,40 +419,13 @@ def open_dashboard_window(window, on_logout=None):
     left_top = tk.Frame(tb_inner, bg=NAV_BG)
     left_top.pack(side="left", fill="y")
 
-    tk.Label(left_top, text="Dashboard", font=("Segoe UI", 12, "bold"),
-             fg=WHITE, bg=NAV_BG).pack(side="left", padx=(0, 16), pady=0)
+    title_lbl = tk.Label(left_top, text="Dashboard", font=("Segoe UI", 12, "bold"),
+             fg=WHITE, bg=NAV_BG)
+    title_lbl.pack(side="left", padx=(0, 16), pady=0)
     # bind vertical centering
     left_top.pack_configure(pady=0)
 
-    tk.Frame(left_top, bg="#2d4d8a", width=1).pack(side="left", fill="y",
-                                                    pady=14)
 
-    search_wrap = tk.Frame(left_top, bg="#0d2d6b",
-                           highlightthickness=1,
-                           highlightbackground="#2d4d8a",
-                           highlightcolor="#2d4d8a", bd=0)
-    search_wrap.pack(side="left", padx=(16, 0), pady=15)
-    tk.Label(search_wrap, text="🔍", font=("Segoe UI", 9),
-             fg="#8fa8cc", bg="#0d2d6b").pack(side="left", padx=(8, 2))
-    search_entry = tk.Entry(search_wrap, font=("Segoe UI", 10),
-                            fg="#8fa8cc", bg="#0d2d6b",
-                            insertbackground=WHITE,
-                            relief="flat", bd=0, width=26)
-    search_entry.insert(0, "Search student ID or name...")
-    search_entry.pack(side="left", pady=7, padx=(0, 10))
-
-    def _fi(e):
-        if search_entry.get() == "Search student ID or name...":
-            search_entry.delete(0, "end")
-            search_entry.config(fg=WHITE)
-
-    def _fo(e):
-        if not search_entry.get().strip():
-            search_entry.insert(0, "Search student ID or name...")
-            search_entry.config(fg="#8fa8cc")
-
-    search_entry.bind("<FocusIn>",  _fi)
-    search_entry.bind("<FocusOut>", _fo)
 
     # Right: Student User pill button
     right_top = tk.Frame(tb_inner, bg=NAV_BG)
