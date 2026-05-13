@@ -6,7 +6,6 @@ from ttkbootstrap.constants import LEFT, CENTER, BOTTOM
 from ttkbootstrap.icons import Emoji
 
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
-from main import on_hover, on_leave
 from icon_utils import apply_window_icon
 
 
