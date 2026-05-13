@@ -22,13 +22,16 @@ TABLE_ALT    = "#102d55"
 
 def _make_nav_btn(parent, text, icon, active=False, command=None):
     bg = NAV_HOVER if active else NAV_BG
-    f = tk.Frame(parent, bg=bg, cursor="hand2")
+    f = tk.Frame(parent, bg=bg, cursor="hand2",
+                 highlightthickness=0, bd=0)
     f.pack(fill="x", pady=1)
-    inner = tk.Frame(f, bg=bg)
-    inner.pack(fill="x", padx=8, pady=9)
-    icon_lbl = tk.Label(inner, text=icon, font=("Segoe UI", 12), fg=WHITE, bg=bg)
-    icon_lbl.pack(side="left", padx=(4, 10))
-    text_lbl = tk.Label(inner, text=text, font=("Segoe UI", 11), fg=WHITE, bg=bg, anchor="w")
+    inner = tk.Frame(f, bg=bg, highlightthickness=0, bd=0)
+    inner.pack(fill="x", padx=10, pady=11)
+    icon_lbl = tk.Label(inner, text=icon, font=("Segoe UI", 16),
+                        fg=WHITE, bg=bg)
+    icon_lbl.pack(side="left", padx=(6, 14))
+    text_lbl = tk.Label(inner, text=text, font=("Segoe UI", 14),
+                        fg=WHITE, bg=bg, anchor="w")
     text_lbl.pack(side="left", fill="x")
 
     all_widgets = [f, inner, icon_lbl, text_lbl]
@@ -51,9 +54,9 @@ def _make_nav_btn(parent, text, icon, active=False, command=None):
 
 
 def _section_label(parent, text):
-    tk.Label(parent, text=text, font=("Segoe UI", 7, "bold"),
+    tk.Label(parent, text=text, font=("Segoe UI", 9, "bold"),
              fg="#7a9cc7", bg=NAV_BG, anchor="w",
-             padx=16).pack(fill="x", pady=(10, 2))
+             padx=20).pack(fill="x", pady=(14, 4))
 
 
 def _stat_card(parent, title, value, subtitle=None, icon_text="👥",
@@ -116,46 +119,69 @@ def _dept_bar(parent, dept_name, count, total):
 def open_admin_dashboard(window, on_logout=None):
     win = tk.Toplevel(window)
     win.title("Admin Dashboard — EDU SIS")
-    win.geometry("1400x820")
-    win.minsize(1100, 680)
+    win.geometry("1500x900")
+    win.minsize(1280, 760)
     win.configure(bg=NAV_BG)
 
     apply_window_icon(win, calling_file=__file__)
 
-    win.columnconfigure(0, weight=0)
+    win.columnconfigure(0, weight=0, minsize=270)
     win.columnconfigure(1, weight=1)
     win.rowconfigure(0, weight=1)
 
-    # ── SIDEBAR ───────────────────────────────────────────────────────────────
-    sidebar = tk.Frame(win, bg=NAV_BG, width=250)
-    sidebar.grid(row=0, column=0, sticky="nsew")
-    sidebar.grid_propagate(False)
+    # ── SIDEBAR (Canvas-based for bulletproof navy bg rendering) ──────────────
+    SIDEBAR_W = 270
+    sidebar_canvas = tk.Canvas(win, width=SIDEBAR_W, bg=NAV_BG,
+                               highlightthickness=0, borderwidth=0,
+                               bd=0, relief="flat")
+    sidebar_canvas.grid(row=0, column=0, sticky="nsew")
 
-    logo_row = tk.Frame(sidebar, bg=NAV_BG)
-    logo_row.pack(fill="x", padx=16, pady=(20, 12))
+    # Inner frame holds the actual sidebar widgets, painted on top of canvas bg
+    sidebar = tk.Frame(sidebar_canvas, bg=NAV_BG,
+                       highlightthickness=0, bd=0)
+    _sb_window = sidebar_canvas.create_window(0, 0, anchor="nw",
+                                              window=sidebar,
+                                              width=SIDEBAR_W)
+
+    def _resize_sidebar(e):
+        sidebar_canvas.itemconfig(_sb_window,
+                                  width=e.width, height=e.height)
+        # Repaint a navy rectangle covering the full canvas
+        sidebar_canvas.delete("bg")
+        sidebar_canvas.create_rectangle(0, 0, e.width, e.height,
+                                        fill=NAV_BG, outline="",
+                                        tags="bg")
+        sidebar_canvas.tag_lower("bg")
+
+    sidebar_canvas.bind("<Configure>", _resize_sidebar)
+
+    logo_row = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
+    logo_row.pack(fill="x", padx=18, pady=(22, 14))
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     assets_dir  = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets"))
 
     try:
-        _img   = Image.open(os.path.join(assets_dir, "edu-crest-white.png")).resize((60, 60), Image.LANCZOS)
+        _img   = Image.open(os.path.join(assets_dir, "edu-crest-white.png")).resize((68, 68), Image.LANCZOS)
         _photo = ImageTk.PhotoImage(_img)
-        lbl_logo = tk.Label(logo_row, image=_photo, bg=NAV_BG)
+        lbl_logo = tk.Label(logo_row, image=_photo, bg=NAV_BG,
+                            highlightthickness=0, bd=0)
         lbl_logo.image = _photo
-        lbl_logo.pack(side="left", padx=(0, 10))
+        lbl_logo.pack(side="left", padx=(0, 12))
     except Exception:
         pass
 
-    text_col = tk.Frame(logo_row, bg=NAV_BG)
+    text_col = tk.Frame(logo_row, bg=NAV_BG, highlightthickness=0, bd=0)
     text_col.pack(side="left")
     tk.Label(text_col, text="ENCHONG DEE\nUNIVERSITY",
-             font=("Segoe UI", 11, "bold"), fg=WHITE, bg=NAV_BG,
+             font=("Segoe UI", 13, "bold"), fg=WHITE, bg=NAV_BG,
              justify="left", anchor="w").pack(anchor="w")
     tk.Label(text_col, text="STUDENT INFORMATION SYSTEM",
-             font=("Segoe UI", 6), fg="#8fa8cc", bg=NAV_BG,
+             font=("Segoe UI", 7), fg="#8fa8cc", bg=NAV_BG,
              justify="left", anchor="w").pack(anchor="w")
 
-    tk.Frame(sidebar, bg="#1a3a6b", height=1).pack(fill="x", padx=12, pady=(4, 8))
+    tk.Frame(sidebar, bg="#1a3a6b", height=1,
+             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(6, 10))
 
     nav = tk.Frame(sidebar, bg=NAV_BG)
     nav.pack(fill="x", padx=4)
@@ -172,18 +198,20 @@ def open_admin_dashboard(window, on_logout=None):
     _make_nav_btn(nav, "Settings",    "⚙")
 
     # Logout at bottom
-    bottom = tk.Frame(sidebar, bg=NAV_BG)
-    bottom.pack(side="bottom", fill="x", padx=4, pady=12)
-    tk.Frame(bottom, bg="#1a3a6b", height=1).pack(fill="x", padx=12, pady=(0, 8))
+    bottom = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
+    bottom.pack(side="bottom", fill="x", padx=4, pady=14)
+    tk.Frame(bottom, bg="#1a3a6b", height=1,
+             highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 10))
 
-    logout_f = tk.Frame(bottom, bg=NAV_BG, cursor="hand2")
+    logout_f = tk.Frame(bottom, bg=NAV_BG, cursor="hand2",
+                        highlightthickness=0, bd=0)
     logout_f.pack(fill="x")
-    logout_inner = tk.Frame(logout_f, bg=NAV_BG)
-    logout_inner.pack(fill="x", padx=8, pady=9)
-    lbl_logout_icon = tk.Label(logout_inner, text="⬛", font=("Segoe UI", 12),
+    logout_inner = tk.Frame(logout_f, bg=NAV_BG, highlightthickness=0, bd=0)
+    logout_inner.pack(fill="x", padx=10, pady=11)
+    lbl_logout_icon = tk.Label(logout_inner, text="◼", font=("Segoe UI", 16),
                                fg=ACCENT_RED, bg=NAV_BG)
-    lbl_logout_icon.pack(side="left", padx=(4, 10))
-    lbl_logout_text = tk.Label(logout_inner, text="Logout", font=("Segoe UI", 11),
+    lbl_logout_icon.pack(side="left", padx=(6, 14))
+    lbl_logout_text = tk.Label(logout_inner, text="Logout", font=("Segoe UI", 14),
                                fg=ACCENT_RED, bg=NAV_BG, anchor="w")
     lbl_logout_text.pack(side="left")
 
