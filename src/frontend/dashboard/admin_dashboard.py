@@ -565,16 +565,265 @@ def build_add_student_tab(parent, switch_cb):
     btn_cancel.pack(side="right", padx=(0, 16))
 
 def build_edit_student_tab(parent, switch_cb):
-    tk.Label(parent, text="Edit Student Record", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Search and edit form fields will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    # Top Search Bar
+    top_bar = tk.Frame(container, bg=WHITE)
+    top_bar.pack(fill="x", pady=(48, 16), padx=120)
+    
+    tk.Label(top_bar, text="Search Student ID:", font=("Segoe UI", 10, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
+    
+    search_f = tk.Frame(top_bar, bg="#f4f4f5", height=40)
+    search_f.pack(side="left", fill="x", expand=True, padx=16)
+    search_f.pack_propagate(False)
+    e_search = tk.Entry(search_f, font=("Segoe UI", 10), bg="#f4f4f5", fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+    e_search.pack(fill="both", expand=True, padx=16, pady=8)
+    e_search.insert(0, "e.g. 26-1234")
+    
+    btn_search = tk.Button(top_bar, text="Search", font=("Segoe UI", 9, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=4, cursor="hand2")
+    btn_search.pack(side="right")
+
+    tk.Frame(container, bg="#e2e8f0", height=1).pack(fill="x", padx=120, pady=16)
+
+    # Form Container
+    form = tk.Frame(container, bg=WHITE)
+    form.pack(fill="both", expand=True, padx=120)
+
+    def _make_field(parent_frame, label_text, placeholder, is_dropdown=False):
+        f = tk.Frame(parent_frame, bg=WHITE)
+        f.pack(fill="x", expand=True, padx=16, pady=(0, 24))
+        tk.Label(f, text=label_text, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 8))
+        input_bg = "#f4f4f5"
+        inner = tk.Frame(f, bg=input_bg, height=48)
+        inner.pack(fill="x")
+        inner.pack_propagate(False)
+        
+        if is_dropdown:
+            style = tkttk.Style()
+            cb = tkttk.Combobox(inner, font=("Segoe UI", 10), state="readonly", style="AddStudent.TCombobox")
+            cb.pack(fill="both", expand=True, padx=2, pady=8)
+            cb.set(placeholder)
+            return cb
+        else:
+            e = tk.Entry(inner, font=("Segoe UI", 10), bg=input_bg, fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+            e.pack(fill="both", expand=True, padx=16, pady=12)
+            e.insert(0, placeholder)
+            return e
+
+    # Row 1
+    r1 = tk.Frame(form, bg=WHITE); r1.pack(fill="x")
+    c1_1 = tk.Frame(r1, bg=WHITE); c1_1.pack(side="left", fill="both", expand=True)
+    c1_2 = tk.Frame(r1, bg=WHITE); c1_2.pack(side="left", fill="both", expand=True)
+    _make_field(c1_1, "Student ID", "26-1234")
+    _make_field(c1_2, "Full name", "Surname, Full name, M.I")
+
+    # Row 2
+    r2 = tk.Frame(form, bg=WHITE); r2.pack(fill="x")
+    c2_1 = tk.Frame(r2, bg=WHITE); c2_1.pack(side="left", fill="both", expand=True)
+    c2_2 = tk.Frame(r2, bg=WHITE); c2_2.pack(side="left", fill="both", expand=True)
+    _make_field(c2_1, "Course", "BS Computer Science", is_dropdown=True)
+    _make_field(c2_2, "Year Level", "1st Year", is_dropdown=True)
+
+    # Row 3 (Full width)
+    r3 = tk.Frame(form, bg=WHITE); r3.pack(fill="x")
+    _make_field(r3, "Email Address", "student@university.edu")
+
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg="#10b981", highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Changes saved successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    # Bottom Buttons
+    footer = tk.Frame(form, bg=WHITE)
+    footer.pack(fill="x", pady=(16, 48), padx=16)
+    btn_add = tk.Button(footer, text="Save Changes", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_add.pack(side="right")
+
+def build_remove_student_tab(parent, switch_cb):
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    # Top Search Bar
+    top_bar = tk.Frame(container, bg=WHITE)
+    top_bar.pack(fill="x", pady=(48, 16), padx=120)
+    
+    tk.Label(top_bar, text="Search Student ID:", font=("Segoe UI", 10, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
+    
+    search_f = tk.Frame(top_bar, bg="#f4f4f5", height=40)
+    search_f.pack(side="left", fill="x", expand=True, padx=16)
+    search_f.pack_propagate(False)
+    e_search = tk.Entry(search_f, font=("Segoe UI", 10), bg="#f4f4f5", fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+    e_search.pack(fill="both", expand=True, padx=16, pady=8)
+    e_search.insert(0, "e.g. 26-1234")
+    
+    btn_search = tk.Button(top_bar, text="Search", font=("Segoe UI", 9, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=4, cursor="hand2")
+    btn_search.pack(side="right")
+
+    tk.Frame(container, bg="#e2e8f0", height=1).pack(fill="x", padx=120, pady=16)
+
+    # Card
+    card = tk.Frame(container, bg="#fff1f2", highlightthickness=1, highlightbackground="#fecdd3")
+    card.pack(fill="x", padx=120, pady=16)
+    
+    inner_card = tk.Frame(card, bg="#fff1f2")
+    inner_card.pack(fill="both", expand=True, padx=32, pady=32)
+
+    tk.Label(inner_card, text="Student Found", font=("Segoe UI", 10, "bold"), fg="#e11d48", bg="#fff1f2").pack(anchor="w", pady=(0, 16))
+    tk.Label(inner_card, text="Name: Juan Dela Cruz", font=("Segoe UI", 14), fg=TEXT_PRIMARY, bg="#fff1f2").pack(anchor="w")
+    tk.Label(inner_card, text="Course & Year: BS Computer Science - 1st Year", font=("Segoe UI", 10), fg=TEXT_MUTED, bg="#fff1f2").pack(anchor="w", pady=(4, 16))
+    
+    tk.Label(inner_card, text="Warning: Deleting this student record is irreversible and will remove all associated grades and history.", font=("Segoe UI", 9), fg="#e11d48", bg="#fff1f2").pack(anchor="w", pady=(0, 24))
+
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg="#e11d48", highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Student record deleted permanently", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#e11d48", padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    btn_del = tk.Button(inner_card, text="Delete Student Record", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#e11d48", relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_del.pack(anchor="w")
+
+def build_search_tab(parent, switch_cb):
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    tk.Label(container, text="Student Search", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(pady=(48, 32), padx=48, anchor="w")
+
+    filters_f = tk.Frame(container, bg=WHITE)
+    filters_f.pack(fill="x", padx=48)
+
+    def _make_filter(p, label, opts):
+        f = tk.Frame(p, bg=WHITE)
+        f.pack(side="left", padx=(0, 24))
+        tk.Label(f, text=label, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w")
+        style = tkttk.Style()
+        cb = tkttk.Combobox(f, font=("Segoe UI", 10), state="readonly", style="AddStudent.TCombobox", width=20)
+        cb['values'] = opts
+        cb.pack(pady=4)
+        if opts: cb.set(opts[0])
+        return cb
+
+    _make_filter(filters_f, "Course", ["All Courses", "BS Computer Science", "BS Information Technology"])
+    _make_filter(filters_f, "Year Level", ["All Years", "1st Year", "2nd Year", "3rd Year", "4th Year"])
+    _make_filter(filters_f, "Status", ["All", "Active", "Inactive"])
+
+    btn_search = tk.Button(filters_f, text="Apply Filters", font=("Segoe UI", 9, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=4, cursor="hand2")
+    btn_search.pack(side="left", pady=(16, 0))
+
+    # Grid
+    grid_f = tk.Frame(container, bg=WHITE, highlightthickness=1, highlightbackground="#e2e8f0")
+    grid_f.pack(fill="both", expand=True, padx=48, pady=32)
+
+    cols = ("ID", "Name", "Course", "Year", "Status")
+    tree = tkttk.Treeview(grid_f, columns=cols, show="headings", height=15)
+    for c in cols:
+        tree.heading(c, text=c)
+        tree.column(c, anchor="w", width=150)
+    
+    tree.insert("", "end", values=("26-1234", "Juan Dela Cruz", "BS Computer Science", "1st Year", "Active"))
+    tree.insert("", "end", values=("25-0001", "Maria Clara", "BS Information Technology", "2nd Year", "Active"))
+    
+    tree.pack(fill="both", expand=True)
+
+def build_reports_tab(parent, switch_cb):
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    header = tk.Frame(container, bg=WHITE)
+    header.pack(fill="x", pady=(48, 32), padx=48)
+    
+    tk.Label(header, text="System Reports", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
+
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg=NAV_BG, highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Report exported as PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    btn_export = tk.Button(header, text="Export to PDF", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#dc2626", relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_export.pack(side="right")
+
+    # Metrics
+    metrics_f = tk.Frame(container, bg=WHITE)
+    metrics_f.pack(fill="x", padx=48, pady=(0, 32))
+    
+    def _metric(p, title, val, color):
+        card = tk.Frame(p, bg=color, highlightthickness=1, highlightbackground=color)
+        card.pack(side="left", fill="x", expand=True, padx=(0, 16))
+        tk.Label(card, text=title, font=("Segoe UI", 10, "bold"), fg=WHITE, bg=color).pack(anchor="w", padx=16, pady=(16, 4))
+        tk.Label(card, text=val, font=("Segoe UI", 24, "bold"), fg=WHITE, bg=color).pack(anchor="w", padx=16, pady=(0, 16))
+        
+    _metric(metrics_f, "Total Students", "1,250", "#2563eb") # blue
+    _metric(metrics_f, "Active Students", "1,200", "#16a34a") # green
+    _metric(metrics_f, "Inactive Students", "50", "#64748b") # slate
+
+    # Preview Table
+    tk.Label(container, text="Recent Enrollments Preview", font=("Segoe UI", 12, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", padx=48, pady=(0, 16))
+    grid_f = tk.Frame(container, bg=WHITE, highlightthickness=1, highlightbackground="#e2e8f0")
+    grid_f.pack(fill="both", expand=True, padx=48, pady=(0, 48))
+
+    cols = ("Date", "ID", "Name", "Course")
+    tree = tkttk.Treeview(grid_f, columns=cols, show="headings", height=10)
+    for c in cols: tree.heading(c, text=c); tree.column(c, anchor="w", width=150)
+    tree.insert("", "end", values=("2026-05-14", "26-1234", "Juan Dela Cruz", "BS Computer Science"))
+    tree.pack(fill="both", expand=True)
 
 def build_settings_tab(parent, switch_cb):
-    tk.Label(parent, text="System Settings", font=("Segoe UI", 18, "bold"), fg=NAV_BG, bg=CONTENT_BG).pack(anchor="w", padx=32, pady=32)
-    f = tk.Frame(parent, bg=CARD_BG, highlightthickness=1, highlightbackground=CARD_BORDER)
-    f.pack(fill="both", expand=True, padx=32, pady=(0, 32))
-    tk.Label(f, text="(Settings toggles and configurations will go here)", font=("Segoe UI", 12), fg=TEXT_MUTED, bg=CARD_BG).pack(expand=True)
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+    
+    tk.Label(container, text="System Configuration", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(pady=(48, 32), padx=120, anchor="w")
+
+    form = tk.Frame(container, bg=WHITE)
+    form.pack(fill="both", expand=True, padx=120)
+
+    # Col 1: Academic Settings
+    col1 = tk.Frame(form, bg=WHITE)
+    col1.pack(side="left", fill="both", expand=True, padx=(0, 16))
+    
+    tk.Label(col1, text="Academic Settings", font=("Segoe UI", 12, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 16))
+    
+    def _make_field(parent_frame, label_text, placeholder):
+        f = tk.Frame(parent_frame, bg=WHITE)
+        f.pack(fill="x", expand=True, pady=(0, 24))
+        tk.Label(f, text=label_text, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 8))
+        inner = tk.Frame(f, bg="#f4f4f5", height=48)
+        inner.pack(fill="x"); inner.pack_propagate(False)
+        e = tk.Entry(inner, font=("Segoe UI", 10), bg="#f4f4f5", fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+        e.pack(fill="both", expand=True, padx=16, pady=12)
+        e.insert(0, placeholder)
+
+    _make_field(col1, "Current Academic Year", "2026-2027")
+    _make_field(col1, "Current Semester", "1st Semester")
+
+    # Col 2: System Toggles
+    col2 = tk.Frame(form, bg=WHITE)
+    col2.pack(side="left", fill="both", expand=True, padx=(16, 0))
+
+    tk.Label(col2, text="System Preferences", font=("Segoe UI", 12, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 16))
+    
+    def _toggle(p, text, on=False):
+        f = tk.Frame(p, bg=WHITE)
+        f.pack(fill="x", pady=(0, 16))
+        tk.Label(f, text="☑" if on else "☐", font=("Segoe UI Emoji", 14), fg=NAV_BG if on else "#94a3b8", bg=WHITE).pack(side="left")
+        tk.Label(f, text=text, font=("Segoe UI", 10), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left", padx=(8, 0))
+
+    _toggle(col2, "Allow New Enrollments", True)
+    _toggle(col2, "Enable Student Portal Login", True)
+    _toggle(col2, "Maintenance Mode (Admin Only)", False)
+
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg="#10b981", highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Settings saved successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+
+    footer = tk.Frame(col1, bg=WHITE)
+    footer.pack(fill="x", pady=(32, 0))
+    btn_save = tk.Button(footer, text="Save Settings", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=6, cursor="hand2", command=show_notification)
+    btn_save.pack(anchor="w")
 
 
 # ── Main entry ─────────────────────────────────────────────────────────────────
@@ -677,6 +926,12 @@ def open_admin_dashboard(window, on_logout=None):
             build_add_student_tab(main_frame, switch_tab)
         elif tab_name == "Edit Student":
             build_edit_student_tab(main_frame, switch_tab)
+        elif tab_name == "Remove":
+            build_remove_student_tab(main_frame, switch_tab)
+        elif tab_name == "Search":
+            build_search_tab(main_frame, switch_tab)
+        elif tab_name == "Reports":
+            build_reports_tab(main_frame, switch_tab)
         elif tab_name == "Student Profile":
             build_student_profile_tab(main_frame, switch_tab)
         elif tab_name == "Settings":
