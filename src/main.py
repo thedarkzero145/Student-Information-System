@@ -36,7 +36,9 @@ def main() -> None:
                                 open_login_window(window, on_success=on_login_success)
                         open_admin_dashboard(window, on_logout=on_logout)
                 else:
-                        open_dashboard_window(window)
+                        def on_logout():
+                                open_login_window(window, on_success=on_login_success)
+                        open_dashboard_window(window, on_logout=on_logout)
 
         open_login_window(window, on_success=on_login_success)
 

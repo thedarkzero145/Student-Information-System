@@ -73,7 +73,7 @@ def open_login_window(window, on_success=None):
     # ── Window ────────────────────────────────────────────────────────────────
 
     win = Toplevel(window)
-    win.title("Login")
+    win.title("Enchong Dee University Student Information System")
     win.geometry("1000x600")
     win.resizable(False, False)
 
