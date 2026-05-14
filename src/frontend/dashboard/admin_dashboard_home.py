@@ -1,4 +1,8 @@
 import tkinter as tk
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 NAV_BG        = "#001f5b"
 WHITE         = "#ffffff"
@@ -33,10 +37,10 @@ def build_dashboard_tab(parent, switch_cb):
         tk.Label(txt_f, text=val, font=("Segoe UI", 24, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w")
         return outer
 
-    _stat_card(stats_f, "Total Students", "1,245", "👥")
-    _stat_card(stats_f, "Active Subjects", "142", "📚")
-    _stat_card(stats_f, "Upcoming Events", "12", "🎉")
-    c4 = _stat_card(stats_f, "Announcements", "3", "🔊")
+    _stat_card(stats_f, "Total Students", os.getenv("ADMIN_HOME_TOTAL_STUDENTS", "1,245"), "👥")
+    _stat_card(stats_f, "Active Subjects", os.getenv("ADMIN_HOME_ACTIVE_SUBJECTS", "142"), "📚")
+    _stat_card(stats_f, "Upcoming Events", os.getenv("ADMIN_HOME_UPCOMING_EVENTS", "12"), "🎉")
+    c4 = _stat_card(stats_f, "Announcements", os.getenv("ADMIN_HOME_ANNOUNCEMENTS", "3"), "🔊")
     c4.pack_configure(padx=0)
 
     # Graphs Row
@@ -55,7 +59,11 @@ def build_dashboard_tab(parent, switch_cb):
     def _draw_bar_chart(e):
         c_bar.delete("all")
         w, h = e.width, e.height
-        data = [("2022", 800), ("2023", 950), ("2024", 1100), ("2025", 1050), ("2026", 1245)]
+        env_data = os.getenv("ADMIN_HOME_BAR_DATA", "2022|800,2023|950,2024|1100,2025|1050,2026|1245")
+        data = []
+        for pair in env_data.split(","):
+            year, val = pair.split("|")
+            data.append((year, int(val)))
         max_val = 1500
         bar_w = 40
         spacing = (w - (bar_w * len(data))) / (len(data) + 1)
@@ -86,7 +94,11 @@ def build_dashboard_tab(parent, switch_cb):
         cx, cy = w/2, h/2 - 10
         r = min(w, h)/2 - 30
         
-        data = [("BSIT", 45, "#2563eb"), ("BSCS", 25, "#16a34a"), ("BSBA", 20, "#d97706"), ("Other", 10, "#94a3b8")]
+        env_data = os.getenv("ADMIN_HOME_PIE_DATA", "BSIT|45|#2563eb,BSCS|25|#16a34a,BSBA|20|#d97706,Other|10|#94a3b8")
+        data = []
+        for triplet in env_data.split(","):
+            label, pct, color = triplet.split("|")
+            data.append((label, int(pct), color))
         
         start_ang = 0
         for label, pct, col in data:

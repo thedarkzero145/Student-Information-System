@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import tkinter as tk
 from tkinter import ttk as tkttk
 from PIL import Image, ImageTk
@@ -124,9 +127,9 @@ def build_dashboard_tab(parent, switch_cb):
     
     text_f = tk.Frame(banner_pad, bg=NAV_BG)
     text_f.pack(side="left", fill="y", pady=6)
-    tk.Label(text_f, text="Juan Dela Cruz", font=("Segoe UI", 24), fg=WHITE, bg=NAV_BG).pack(anchor="w")
-    tk.Label(text_f, text="BSIT 1-1", font=("Segoe UI", 12), fg=WHITE, bg=NAV_BG).pack(anchor="w", pady=(4,0))
-    tk.Label(text_f, text="25-2751", font=("Segoe UI", 10), fg="#aab4c8", bg=NAV_BG).pack(anchor="w", pady=(4,0))
+    tk.Label(text_f, text=os.getenv("STUDENT_NAME", "Juan Dela Cruz"), font=("Segoe UI", 24), fg=WHITE, bg=NAV_BG).pack(anchor="w")
+    tk.Label(text_f, text=os.getenv("STUDENT_PROGRAM", "BSIT 1-1"), font=("Segoe UI", 12), fg=WHITE, bg=NAV_BG).pack(anchor="w", pady=(4,0))
+    tk.Label(text_f, text=os.getenv("STUDENT_ID", "25-2751"), font=("Segoe UI", 10), fg="#aab4c8", bg=NAV_BG).pack(anchor="w", pady=(4,0))
     
     
     # ── Grid Layout ──
@@ -185,9 +188,9 @@ def build_dashboard_tab(parent, switch_cb):
         loc_str = f"📍 {room}" if room else f"👤 {advisor}"
         tk.Label(btm, text=loc_str, font=("Segoe UI", 8), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left", padx=(12, 0))
 
-    _timeline_item(timeline, "09:00 AM - 10:30 AM", "ECO 201: Microeconomic Theory", "Lecture", "Hall 4B, Business Building")
-    _timeline_item(timeline, "11:00 AM - 12:30 PM", "STA 102: Statistics for Business", "Seminar", "Room 204, Tech Center", current=True)
-    _timeline_item(timeline, "02:00 PM - 02:30 PM", "Academic Advising Meeting", None, None, last=True, advisor="Advisor: Dr. Sarah Jenkins")
+    _timeline_item(timeline, os.getenv("SCHEDULE_TIME_1"), os.getenv("SCHEDULE_COURSE_1"), os.getenv("SCHEDULE_TYPE_1"), os.getenv("SCHEDULE_ROOM_1"))
+    _timeline_item(timeline, os.getenv("SCHEDULE_TIME_2"), os.getenv("SCHEDULE_COURSE_2"), os.getenv("SCHEDULE_TYPE_2"), os.getenv("SCHEDULE_ROOM_2"), current=True)
+    _timeline_item(timeline, os.getenv("SCHEDULE_TIME_3"), os.getenv("SCHEDULE_COURSE_3"), os.getenv("SCHEDULE_TYPE_3") if os.getenv("SCHEDULE_TYPE_3") else None, os.getenv("SCHEDULE_ROOM_3") if os.getenv("SCHEDULE_ROOM_3") else None, last=True, advisor=os.getenv("SCHEDULE_ADVISOR_3"))
 
     # ── Right: Tiles ──
     right_col = tk.Frame(cols, bg=CONTENT_BG)
@@ -199,8 +202,8 @@ def build_dashboard_tab(parent, switch_cb):
     quotes = tk.Frame(quotes_outer, bg=NAV_BG)
     quotes.pack(padx=1, pady=1, fill="both", expand=True)
     tk.Label(quotes, text="Motivational Quote", font=("Segoe UI", 14), fg=WHITE, bg=NAV_BG).pack(anchor="w", padx=24, pady=(24, 16))
-    tk.Label(quotes, text='"I Think, therefore I am"', font=("Segoe UI", 20), fg=WHITE, bg=NAV_BG).pack(anchor="w", padx=24, pady=(0, 16))
-    tk.Label(quotes, text="— Renz Descartes", font=("Segoe UI", 10), fg="#aab4c8", bg=NAV_BG).pack(anchor="w", padx=24, pady=(0, 24))
+    tk.Label(quotes, text=f'"{os.getenv("QUOTE_TEXT", "I Think, therefore I am")}"', font=("Segoe UI", 20), fg=WHITE, bg=NAV_BG).pack(anchor="w", padx=24, pady=(0, 16))
+    tk.Label(quotes, text=f'— {os.getenv("QUOTE_AUTHOR", "Renz Descartes")}', font=("Segoe UI", 10), fg="#aab4c8", bg=NAV_BG).pack(anchor="w", padx=24, pady=(0, 24))
 
     # Two small cards row
     row2 = tk.Frame(right_col, bg=CONTENT_BG)
@@ -222,15 +225,15 @@ def build_dashboard_tab(parent, switch_cb):
         tk.Label(r, text=val, font=("Segoe UI", 20), fg=WHITE, bg=NAV_BG).pack(anchor="w")
         return outer
         
-    _navy_stat(row2, "★", "Grade", "99.6")
-    att = _navy_stat(row2, "👤", "Attendance", "18.0 Units")
+    _navy_stat(row2, "★", "Grade", os.getenv("STUDENT_GRADE", "99.6"))
+    att = _navy_stat(row2, "👤", "Attendance", os.getenv("STUDENT_ATTENDANCE", "18.0 Units"))
     att.pack_configure(padx=0) # remove right margin on second card
     
     # Third small card row
     row3 = tk.Frame(right_col, bg=CONTENT_BG)
     row3.pack(fill="x")
     
-    c3 = _navy_stat(row3, "≡", "Credits Earned", "18.0 Units")
+    c3 = _navy_stat(row3, "≡", "Credits Earned", os.getenv("STUDENT_CREDITS", "18.0 Units"))
     c3.pack_configure(side="left", fill="both", expand=True, padx=0)
 
 
@@ -474,7 +477,7 @@ def open_dashboard_window(window, on_logout=None):
     tk.Label(avatar_f, text="🎓", font=("Segoe UI Emoji", 12),
              fg=WHITE, bg="#2d4d8a").place(relx=0.5, rely=0.5, anchor="center")
 
-    tk.Label(user_pill, text="Student Name", font=("Segoe UI", 10),
+    tk.Label(user_pill, text=os.getenv("STUDENT_NAME", "Student Name"), font=("Segoe UI", 10),
              fg=WHITE, bg=NAV_BG).pack(side="left", padx=(0, 12), pady=6)
 
     # ── CONTENT AREA (light grey page) ────────────────────────────────────────

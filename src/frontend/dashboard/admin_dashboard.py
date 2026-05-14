@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import tkinter as tk
 from tkinter import ttk as tkttk
 from PIL import Image, ImageTk
@@ -184,12 +187,16 @@ def build_dashboard_tab(parent, switch_cb):
     cards_row = tk.Frame(parent, bg=CONTENT_BG)
     cards_row.pack(fill="x", padx=24, pady=(22, 16))
 
-    _stat_card(cards_row, "Total Students",    "12,482", None,
+    total_students = os.getenv("ADMIN_TOTAL_STUDENTS", "0")
+    active_students = os.getenv("ADMIN_ACTIVE_STUDENTS", "0")
+    inactive_students = os.getenv("ADMIN_INACTIVE_STUDENTS", "0")
+
+    _stat_card(cards_row, "Total Students",    total_students, None,
                "👥", trend_text="2.4%  from last semester")
-    _stat_card(cards_row, "Active Students",   "11,940",
+    _stat_card(cards_row, "Active Students",   active_students,
                "⊙  Currently enrolled in 1+ courses",
                "✅", badge_text="Active",   badge_bg=BADGE_GREEN_BG)
-    _stat_card(cards_row, "Inactive Students", "542",
+    _stat_card(cards_row, "Inactive Students", inactive_students,
                "⊙  Includes graduated & on-leave",
                "🚫", badge_text="Inactive", badge_bg=BADGE_RED_BG)
 
@@ -241,18 +248,17 @@ def build_dashboard_tab(parent, switch_cb):
     tree.column("course", width=200, anchor="center", minwidth=130)
     tree.column("year",   width=70,  anchor="center", minwidth=50)
 
-    DEMO_STUDENTS = [
-        ("25-0001", "Juan Dela Cruz",  "BS Computer Science",  "2nd"),
-        ("25-0002", "Maria Santos",    "BS Nursing",           "3rd"),
-        ("25-0003", "Carlos Reyes",    "BS Education",         "1st"),
-        ("25-0004", "Ana Flores",      "BS Accountancy",       "4th"),
-        ("25-0005", "Miguel Torres",   "BS Computer Science",  "1st"),
-        ("25-0006", "Sophia Garcia",   "BS Medical Technology","2nd"),
-        ("25-0007", "Luis Mendoza",    "BS Engineering",       "3rd"),
-        ("25-0008", "Isabella Ramos",  "BS Psychology",        "2nd"),
-        ("25-0009", "Rafael Cruz",     "BS Nursing",           "1st"),
-        ("25-0010", "Patricia Lim",    "BS Accountancy",       "3rd"),
-    ]
+    def _load_student_table():
+        students = []
+        for i in range(1, 11):
+            env_key = f"STUDENT_TABLE_{i}"
+            env_val = os.getenv(env_key, f"25-000{i}|Student {i}|Course|1st")
+            parts = env_val.split("|")
+            if len(parts) == 4:
+                students.append(tuple(parts))
+        return students
+
+    DEMO_STUDENTS = _load_student_table()
     for row in DEMO_STUDENTS:
         tree.insert("", "end", values=row)
 
@@ -278,12 +284,12 @@ def build_dashboard_tab(parent, switch_cb):
 
     campus_overlay = tk.Frame(campus_frame, bg="#0d2447")
     campus_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-    tk.Label(campus_overlay, text="Enchong Dee University Main Campus",
+    tk.Label(campus_overlay, text=os.getenv("CAMPUS_NAME", "Enchong Dee University Main Campus"),
              font=("Segoe UI", 11, "bold"), fg=WHITE, bg="#0d2447",
              anchor="w", wraplength=260, justify="left").pack(anchor="w",
                                                               padx=16, pady=(24, 4))
     tk.Label(campus_overlay,
-             text="Summer 2026 Enrollment is now at 92% capacity.",
+             text=os.getenv("CAMPUS_SUBTITLE", "Summer 2026 Enrollment is now at 92% capacity."),
              font=("Segoe UI", 9), fg="#aab4c8", bg="#0d2447",
              anchor="w", wraplength=260, justify="left").pack(anchor="w", padx=16)
 
@@ -298,10 +304,14 @@ def build_dashboard_tab(parent, switch_cb):
     tk.Label(dept_pad, text="Department Load", font=("Segoe UI", 11, "bold"),
              fg=TEXT_PRIMARY, bg=WHITE, anchor="w").pack(anchor="w", pady=(0, 8))
 
-    TOTAL = 12482
-    _dept_bar(dept_pad, "STEM Programs",    4203, TOTAL)
-    _dept_bar(dept_pad, "Medical Sciences", 3115, TOTAL)
-    _dept_bar(dept_pad, "Liberal Arts",     2890, TOTAL)
+    TOTAL = int(os.getenv("ADMIN_TOTAL_FOR_DEPTS", "12482").replace(",", ""))
+    stem_count = int(os.getenv("ADMIN_DEPT_STEM", "4203").replace(",", ""))
+    med_count = int(os.getenv("ADMIN_DEPT_MEDICAL", "3115").replace(",", ""))
+    lib_count = int(os.getenv("ADMIN_DEPT_LIBERAL", "2890").replace(",", ""))
+
+    _dept_bar(dept_pad, os.getenv("ADMIN_DEPT_NAME_1", "STEM Programs"),    stem_count, TOTAL)
+    _dept_bar(dept_pad, os.getenv("ADMIN_DEPT_NAME_2", "Medical Sciences"), med_count, TOTAL)
+    _dept_bar(dept_pad, os.getenv("ADMIN_DEPT_NAME_3", "Liberal Arts"),     lib_count, TOTAL)
 
     tk.Button(dept_pad, text="View Full Analytics",
               font=("Segoe UI", 10), fg=TEXT_PRIMARY, bg=WHITE,
@@ -333,8 +343,8 @@ def build_student_profile_tab(parent, switch_cb):
     avatar = tk.Label(avatar_wrap, text="👤", font=("Segoe UI Emoji", 48), fg="#cbd5e1", bg="#f1f5f9", width=3, height=1)
     avatar.pack(pady=10)
     
-    tk.Label(left_inner, text="Juan Dela Cruz", font=("Segoe UI", 16, "bold"), fg=NAV_BG, bg=CARD_BG).pack()
-    tk.Label(left_inner, text="B.Sc. Information Technology", font=("Segoe UI", 10), fg=TEXT_MUTED, bg=CARD_BG).pack()
+    tk.Label(left_inner, text=os.getenv("STUDENT_NAME", "Juan Dela Cruz"), font=("Segoe UI", 16, "bold"), fg=NAV_BG, bg=CARD_BG).pack()
+    tk.Label(left_inner, text=os.getenv("STUDENT_PROGRAM", "B.Sc. Information Technology"), font=("Segoe UI", 10), fg=TEXT_MUTED, bg=CARD_BG).pack()
     
     # Badges
     badges = tk.Frame(left_inner, bg=CARD_BG)
@@ -352,7 +362,7 @@ def build_student_profile_tab(parent, switch_cb):
         tk.Label(r, text=label, font=("Segoe UI", 9, "bold"), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left")
         tk.Label(r, text=val, font=("Segoe UI", 10), fg=TEXT_PRIMARY, bg=CARD_BG).pack(side="right")
         
-    _detail_row(det, "Student ID", "SIS-2024-8842")
+    _detail_row(det, "Student ID", os.getenv("STUDENT_ID", "SIS-2024-8842"))
     _detail_row(det, "Admission Date", "August 04, 2026")
     _detail_row(det, "Email Address", "cleven.castillo10@plv.edu")
     _detail_row(det, "Phone", "+1 (555) 012-3456")
@@ -367,12 +377,12 @@ def build_student_profile_tab(parent, switch_cb):
     cgpa = tk.Frame(acad_grid, bg="#1a3a7a")
     cgpa.pack(side="left", fill="both", expand=True, padx=(0, 4))
     tk.Label(cgpa, text="CGPA", font=("Segoe UI", 8), fg="#aab4c8", bg="#1a3a7a").pack(anchor="w", padx=8, pady=(8, 0))
-    tk.Label(cgpa, text="3.92", font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
+    tk.Label(cgpa, text=os.getenv("STUDENT_GRADE", "3.92"), font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
     
     cred = tk.Frame(acad_grid, bg="#1a3a7a")
     cred.pack(side="right", fill="both", expand=True, padx=(4, 0))
     tk.Label(cred, text="Credits", font=("Segoe UI", 8), fg="#aab4c8", bg="#1a3a7a").pack(anchor="w", padx=8, pady=(8, 0))
-    tk.Label(cred, text="112/128", font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
+    tk.Label(cred, text=os.getenv("STUDENT_CREDITS", "112/128"), font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
 
     # RIGHT COLUMN
     right_col = tk.Frame(cols, bg=CARD_BORDER)
@@ -976,6 +986,8 @@ def open_admin_dashboard(window, on_logout=None):
 
         if tab_name == "Dashboard":
             build_dashboard_tab(main_frame, switch_tab)
+        elif tab_name == "Student Profile":
+            build_student_profile_tab(main_frame, switch_tab)
         elif tab_name == "Student List" or tab_name == "Search":
             build_search_tab(main_frame, switch_tab)
         elif tab_name == "Add Student":
