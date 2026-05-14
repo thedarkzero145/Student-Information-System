@@ -29,7 +29,7 @@ def build_grades_tab(parent, switch_cb):
     
     grade_f = tk.Frame(left_inner, bg="#f8fafc")
     grade_f.pack(anchor="w", pady=(12, 16))
-    tk.Label(grade_f, text="1.25", font=("Segoe UI", 48), fg=TEXT_PRIMARY, bg="#f8fafc").pack(side="left")
+    tk.Label(grade_f, text="", font=("Segoe UI", 48), fg=TEXT_PRIMARY, bg="#f8fafc").pack(side="left")
     
     # To bottom align "/ 5.00", we wrap it
     slash_f = tk.Frame(grade_f, bg="#f8fafc")
@@ -39,8 +39,8 @@ def build_grades_tab(parent, switch_cb):
     # Badge
     badge_f = tk.Frame(left_inner, bg="#f8fafc")
     badge_f.pack(anchor="w", side="bottom")
-    tk.Label(badge_f, text="📈 Top 5%", font=("Segoe UI", 8, "bold"), fg="#1e3a8a", bg="#dbeafe", padx=6, pady=2).pack(side="left")
-    tk.Label(badge_f, text="Dean's List Standing", font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg="#f8fafc").pack(side="left", padx=(8,0))
+    tk.Label(badge_f, text="", font=("Segoe UI", 8, "bold"), fg="#1e3a8a", bg="#dbeafe", padx=6, pady=2).pack(side="left")
+    tk.Label(badge_f, text="", font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg="#f8fafc").pack(side="left", padx=(8,0))
 
     # Right Card: Total Earned Credits
     right_card_outer = tk.Frame(top_row, bg=CARD_BORDER)
@@ -53,7 +53,7 @@ def build_grades_tab(parent, switch_cb):
     right_inner.pack(padx=24, pady=24, fill="both", expand=True)
 
     tk.Label(right_inner, text="TOTAL EARNED CREDITS", font=("Segoe UI", 10, "bold"), fg="#93c5fd", bg="#1e3a8a").pack(anchor="w")
-    tk.Label(right_inner, text="96", font=("Segoe UI", 48, "bold"), fg=WHITE, bg="#1e3a8a").pack(anchor="w", pady=(4, 16))
+    tk.Label(right_inner, text="", font=("Segoe UI", 48, "bold"), fg=WHITE, bg="#1e3a8a").pack(anchor="w", pady=(4, 16))
     
     # Progress bar
     prog_bg = tk.Frame(right_inner, bg="#3b82f6", height=6)
@@ -62,7 +62,7 @@ def build_grades_tab(parent, switch_cb):
     prog_fg = tk.Frame(prog_bg, bg="#bfdbfe", width=250)
     prog_fg.pack(side="left", fill="y")
     
-    tk.Label(right_inner, text="Senior Status", font=("Segoe UI", 10), fg="#bfdbfe", bg="#1e3a8a").pack(anchor="e")
+    tk.Label(right_inner, text="", font=("Segoe UI", 10), fg="#bfdbfe", bg="#1e3a8a").pack(anchor="e")
 
     # --- MIDDLE: Transcript Title ---
     tk.Label(container, text="Current Semester Transcript", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(16, 16), padx=48)
@@ -88,13 +88,8 @@ def build_grades_tab(parent, switch_cb):
     tk.Label(header, text="Grades", font=("Segoe UI", 10), fg=WHITE, bg="#002d72").grid(row=0, column=3, sticky="w", padx=24, pady=10)
 
     # Rows
-    courses = [
-        ("CS 401", "Advanced Data Structures", "4.0", "1.00", "#dcfce7", "#166534"),
-        ("MAT 310", "Linear Algebra II", "3.0", "1.25", "#dcfce7", "#166534"),
-        ("ENG 250", "Technical Writing for Sciences", "3.0", "1.00", "#dcfce7", "#166534"),
-        ("PHY 205", "Quantum Mechanics Introduction", "4.0", "2.25", "#fef08a", "#854d0e"),
-        ("HIST 102", "Modern European History", "2.0", "1.50", "#dcfce7", "#166534"),
-    ]
+    courses = []
+    # No data — will be populated by database
 
     for i, (code, title, units, grade, bg_col, fg_col) in enumerate(courses):
         row_bg = WHITE if i % 2 == 0 else "#f8fafc"

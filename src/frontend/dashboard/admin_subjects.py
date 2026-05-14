@@ -56,15 +56,7 @@ def build_subjects_list_tab(parent, switch_cb):
     
     tree.pack(fill="both", expand=True)
     
-    # Mock data
-    mock_data = [
-        ("CS 101", "Introduction to Computing", "3", "BSIT", "Active"),
-        ("ENG 101", "Purposive Communication", "3", "General", "Active"),
-        ("MATH 201", "Calculus I", "4", "BSCS", "Active"),
-        ("PE 1", "Physical Education 1", "2", "General", "Inactive"),
-    ]
-    for d in mock_data:
-        tree.insert("", "end", values=d)
+    # No data — will be populated by database
 
 
 def build_add_subject_tab(parent, switch_cb):

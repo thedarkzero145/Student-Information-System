@@ -40,13 +40,7 @@ def build_announcements_list_tab(parent, switch_cb):
     
     tree.pack(fill="both", expand=True)
     
-    mock_data = [
-        ("Final Examination Schedule Released for Spring 2026", "Today, 9:00 AM", "Registrar's Office", "ACADEMICS"),
-        ("Main Library Renovation Notice", "Yesterday, 2:30 PM", "Facilities Management", "CAMPUS"),
-        ("System Maintenance Downtime", "May 10, 2026", "IT Department", "URGENT"),
-    ]
-    for d in mock_data:
-        tree.insert("", "end", values=d)
+    # No data — will be populated by database
 
 
 def build_add_announcement_tab(parent, switch_cb):

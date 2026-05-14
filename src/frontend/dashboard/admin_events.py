@@ -42,13 +42,7 @@ def build_events_list_tab(parent, switch_cb):
     
     tree.pack(fill="both", expand=True)
     
-    mock_data = [
-        ("Annual Tech Symposium 2026", "May 24, 2026", "8:00 AM - 5:00 PM", "University Grand Hall", "Academic"),
-        ("Freshman Orientation Seminar", "Jun 02, 2026", "9:00 AM - 12:00 PM", "Student Union", "Campus Life"),
-        ("Inter-Department Sports Fest", "Jun 15, 2026", "All Day", "Main Athletics Field", "Sports"),
-    ]
-    for d in mock_data:
-        tree.insert("", "end", values=d)
+    # No data — will be populated by database
 
 
 def build_add_event_tab(parent, switch_cb):

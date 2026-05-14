@@ -10,7 +10,7 @@ from icon_utils import apply_window_icon
 from src.backend.backend import validate_auth, save_credentials_state, get_credentials
 from ttkbootstrap.toast import ToastNotification
 
-# [DEV ONLY] Easy Login Bypasses - Remove in Production
+# [DEV ONLY] Easy Login Bypasses - Remove this in Production
 DEMO_USERNAME  = "2"
 DEMO_PASSWORD  = "2"
 ADMIN_USERNAME = "1"

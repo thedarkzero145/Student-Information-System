@@ -28,38 +28,7 @@ def build_announcements_tab(parent, switch_cb):
     feed = tk.Frame(container, bg=WHITE)
     feed.pack(fill="both", expand=True, padx=24)
 
-    announcements_data = [
-        {
-            "tag": "ACADEMICS",
-            "tag_color": WHITE,
-            "tag_bg": NAV_BG,
-            "title": "Final Examination Schedule Released for Spring 2026",
-            "date": "Today, 9:00 AM",
-            "author": "Registrar's Office",
-            "content": "Please be advised that the final examination schedule for the current semester is now available. Students are required to check their respective portals to verify their schedule. Conflict resolution forms must be submitted by Friday.",
-            "is_new": True
-        },
-        {
-            "tag": "CAMPUS",
-            "tag_color": WHITE,
-            "tag_bg": "#16a34a",
-            "title": "Main Library Renovation Notice",
-            "date": "Yesterday, 2:30 PM",
-            "author": "Facilities Management",
-            "content": "The West Wing of the Main Library will be closed for renovations starting next Monday. Temporary study areas have been set up in the Student Union building. We apologize for the inconvenience.",
-            "is_new": False
-        },
-        {
-            "tag": "URGENT",
-            "tag_color": WHITE,
-            "tag_bg": "#dc2626",
-            "title": "System Maintenance Downtime",
-            "date": "May 10, 2026",
-            "author": "IT Department",
-            "content": "The Student Information System will undergo scheduled maintenance this coming weekend from 12:00 AM to 4:00 AM. Access to grades and enrollment modules will be temporarily unavailable.",
-            "is_new": False
-        }
-    ]
+    announcements_data = [] #no mock datas
 
     for i, data in enumerate(announcements_data):
         card = tk.Frame(feed, bg=WHITE)

@@ -30,44 +30,7 @@ def build_subjects_tab(parent, switch_cb):
     grid_container = tk.Frame(container, bg=WHITE)
     grid_container.pack(fill="both", expand=True, padx=48)
     
-    subjects_data = [
-        {
-            "code": "CS 301",
-            "status": "Enrolled",
-            "status_color": "#16a34a",
-            "title": "Data Structures and\nAlgorithms",
-            "prof": "Prof. Alan Turing",
-            "time_day": "Mon / Wed",
-            "time_span": "9:00 AM - 10:30 AM",
-            "loc_bldg": "Science Center",
-            "loc_room": "Room 402",
-            "credits": "4 Credits"
-        },
-        {
-            "code": "MTH 210",
-            "status": "Enrolled",
-            "status_color": "#16a34a",
-            "title": "Linear Algebra & Matrix\nTheory",
-            "prof": "Dr. Katherine Johnson",
-            "time_day": "Tue / Thu",
-            "time_span": "11:00 AM - 12:15 PM",
-            "loc_bldg": "Mathematics Bldg",
-            "loc_room": "Hall B",
-            "credits": "3 Credits"
-        },
-        {
-            "code": "ENG 105",
-            "status": "Waitlisted",
-            "status_color": "#d97706",
-            "title": "Modern Literature\nSemantics",
-            "prof": "Prof. Virginia Woolf",
-            "time_day": "Friday",
-            "time_span": "2:00 PM - 5:00 PM",
-            "loc_bldg": "Humanities Pavilion",
-            "loc_room": "Seminar Room 12",
-            "credits": "3 Credits"
-        }
-    ]
+    subjects_data = [] #no mock datas
 
     for i in range(3):
         grid_container.columnconfigure(i, weight=1, uniform="col")

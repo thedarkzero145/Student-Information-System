@@ -189,13 +189,13 @@ def build_dashboard_tab(parent, switch_cb):
     inactive_students = ""
 
     _stat_card(cards_row, "Total Students",    total_students, None,
-               "👥", trend_text="2.4%  from last semester")
+               "👥")
     _stat_card(cards_row, "Active Students",   active_students,
-               "⊙  Currently enrolled in 1+ courses",
-               "✅", badge_text="Active",   badge_bg=BADGE_GREEN_BG)
+               None,
+               "✅")
     _stat_card(cards_row, "Inactive Students", inactive_students,
-               "⊙  Includes graduated & on-leave",
-               "🚫", badge_text="Inactive", badge_bg=BADGE_RED_BG)
+               None,
+               "🚫")
 
     # ── LOWER ROW ─────────────────────────────────────────────────────────────
     lower = tk.Frame(parent, bg=CONTENT_BG)
@@ -666,8 +666,8 @@ def build_remove_student_tab(parent, switch_cb):
     inner_card.pack(fill="both", expand=True, padx=32, pady=32)
 
     tk.Label(inner_card, text="Student Found", font=("Segoe UI", 10, "bold"), fg="#e11d48", bg="#fff1f2").pack(anchor="w", pady=(0, 16))
-    tk.Label(inner_card, text="Name: Juan Dela Cruz", font=("Segoe UI", 14), fg=TEXT_PRIMARY, bg="#fff1f2").pack(anchor="w")
-    tk.Label(inner_card, text="Course & Year: BS Computer Science - 1st Year", font=("Segoe UI", 10), fg=TEXT_MUTED, bg="#fff1f2").pack(anchor="w", pady=(4, 16))
+    tk.Label(inner_card, text="Name: ", font=("Segoe UI", 14), fg=TEXT_PRIMARY, bg="#fff1f2").pack(anchor="w")
+    tk.Label(inner_card, text="Course & Year: ", font=("Segoe UI", 10), fg=TEXT_MUTED, bg="#fff1f2").pack(anchor="w", pady=(4, 16))
     
     tk.Label(inner_card, text="Warning: Deleting this student record is irreversible and will remove all associated grades and history.", font=("Segoe UI", 9), fg="#e11d48", bg="#fff1f2").pack(anchor="w", pady=(0, 24))
 

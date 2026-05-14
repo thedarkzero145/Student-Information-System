@@ -28,35 +28,7 @@ def build_events_tab(parent, switch_cb):
     grid_container = tk.Frame(container, bg=WHITE)
     grid_container.pack(fill="both", expand=True, padx=48)
 
-    events_data = [
-        {
-            "month": "MAY",
-            "day": "24",
-            "title": "Annual Tech Symposium 2026",
-            "time": "8:00 AM - 5:00 PM",
-            "location": "University Grand Hall",
-            "type": "Academic",
-            "color": "#2563eb"
-        },
-        {
-            "month": "JUN",
-            "day": "02",
-            "title": "Freshman Orientation Seminar",
-            "time": "9:00 AM - 12:00 PM",
-            "location": "Student Union Auditorium",
-            "type": "Campus Life",
-            "color": "#16a34a"
-        },
-        {
-            "month": "JUN",
-            "day": "15",
-            "title": "Inter-Department Sports Fest",
-            "time": "All Day Event",
-            "location": "Main Athletics Field",
-            "type": "Sports",
-            "color": "#d97706"
-        }
-    ]
+    events_data = [] #removed mock datas
 
     for i in range(3):
         grid_container.columnconfigure(i, weight=1, uniform="col")
