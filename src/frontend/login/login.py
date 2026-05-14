@@ -7,12 +7,14 @@ from ttkbootstrap.constants import LEFT, DARK
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
+from src.backend.backend import load_login_credentials
 
 DEMO_USERNAME = "25-0000"
 DEMO_PASSWORD = "Demo@Admin12!"
 
 
-def open_login_window(window, on_success=None):
+def open_login_window(window, on_success=None, load_saved_credentials=False):
+    saved_credentials = load_login_credentials() if load_saved_credentials else {}
 
     # ── Validation ────────────────────────────────────────────────────────────
 
@@ -54,7 +56,7 @@ def open_login_window(window, on_success=None):
         if username == DEMO_USERNAME and password == DEMO_PASSWORD:
             auth_error_label.config(text="")
             if on_success:
-                on_success(win)
+                on_success(win, username, password, remember_var.get())
         else:
             auth_error_label.config(text="Invalid username or password.")
 
@@ -140,6 +142,7 @@ def open_login_window(window, on_success=None):
                           bg="#f5f5f5", fg="black", relief="flat", bd=0,
                           insertbackground="black")
     user_input.pack(fill="x", ipady=10, pady=(4, 0))
+    user_input.insert(0, saved_credentials.get("username", ""))
     user_input.bind("<FocusOut>", lambda e: user_validation(user_input.get()))
 
     user_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
@@ -155,6 +158,7 @@ def open_login_window(window, on_success=None):
                               bg="#f5f5f5", fg="black", relief="flat", bd=0,
                               insertbackground="black")
     password_input.pack(fill="x", ipady=10, pady=(4, 0))
+    password_input.insert(0, saved_credentials.get("password", ""))
     password_input.bind("<FocusOut>", lambda e: pass_validation(password_input.get()))
 
     password_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
@@ -163,7 +167,7 @@ def open_login_window(window, on_success=None):
 
     # ── Remember me ───────────────────────────────────────────────────────────
 
-    remember_var = tk.BooleanVar()
+    remember_var = tk.BooleanVar(value=bool(saved_credentials))
     remember_row = tk.Frame(form, bg="white")
     remember_row.pack(anchor="w", pady=(0, 10))
 
