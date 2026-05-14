@@ -15,7 +15,6 @@ DEMO_PASSWORD = "Demo@Admin12!"
 def open_login_window(window, on_success=None):
 
     # ── Validation ────────────────────────────────────────────────────────────
-
     def user_validation(user):
         pattern = r"^25-\d{4}$"
         if re.fullmatch(pattern, user):
@@ -44,19 +43,22 @@ def open_login_window(window, on_success=None):
         password_error_label.config(text="")
         return True
 
+
     def on_submit():
+        print("clicked")
         username = user_input.get()
         password = password_input.get()
 
-        if not user_validation(username) or not pass_validation(password):
+        is_user_validate = user_validation(username)
+        is_password_validate = pass_validation(password)
+
+        if not is_user_validate or not is_password_validate:
             return
 
         if username == DEMO_USERNAME and password == DEMO_PASSWORD:
-            auth_error_label.config(text="")
             if on_success:
                 on_success(win)
-        else:
-            auth_error_label.config(text="Invalid username or password.")
+
 
     # ── Window ────────────────────────────────────────────────────────────────
 
@@ -64,6 +66,9 @@ def open_login_window(window, on_success=None):
     win.title("Login")
     win.geometry("1000x600")
     win.resizable(False, False)
+
+    user_validation_func = win.register(user_validation)
+    password_validation_func = win.register(pass_validation)
 
     apply_window_icon(win, calling_file=__file__)
 
@@ -107,7 +112,6 @@ def open_login_window(window, on_success=None):
     ).pack(pady=(6, 0))
 
     # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
-
     right_frame = Frame(win)
     right_frame.place(relx=0.45, rely=0, relwidth=0.55, relheight=1.0)
 
@@ -136,33 +140,23 @@ def open_login_window(window, on_success=None):
     tk.Label(form, text="Username", font=(FONT_DEFAULT_NAME, 11),
              fg="black", bg="white").pack(anchor="w")
 
-    user_input = tk.Entry(form, font=(FONT_DEFAULT_NAME, 11),
-                          bg="#f5f5f5", fg="black", relief="flat", bd=0,
-                          insertbackground="black")
-    user_input.pack(fill="x", ipady=10, pady=(4, 0))
-    user_input.bind("<FocusOut>", lambda e: user_validation(user_input.get()))
+    user_input = Entry(form, validate="focus", validatecommand=(user_validation_func, '%P'), font=(FONT_DEFAULT_NAME, 11))
+    user_input.pack(fill="x", ipady=4, pady=(4, 8))
 
-    user_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
-                                fg="#dc3545", bg="white", anchor="w")
-    user_error_label.pack(fill="x", pady=(2, 10))
+    user_error_label =  Label(form, font=(FONT_DEFAULT_NAME, 8), bootstyle="danger")
+    user_error_label.pack(anchor="w")
 
     # ── Password field ────────────────────────────────────────────────────────
-
     tk.Label(form, text="Password", font=(FONT_DEFAULT_NAME, 11),
              fg="black", bg="white").pack(anchor="w")
 
-    password_input = tk.Entry(form, show="•", font=(FONT_DEFAULT_NAME, 11),
-                              bg="#f5f5f5", fg="black", relief="flat", bd=0,
-                              insertbackground="black")
-    password_input.pack(fill="x", ipady=10, pady=(4, 0))
-    password_input.bind("<FocusOut>", lambda e: pass_validation(password_input.get()))
+    password_input = Entry(form, validate="focus", validatecommand=(password_validation_func, '%P'), show="•", font=(FONT_DEFAULT_NAME, 11))
+    password_input.pack(fill="x", ipady=4, pady=(4, 8))
 
-    password_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
-                                    fg="#dc3545", bg="white", anchor="w")
-    password_error_label.pack(fill="x", pady=(2, 10))
+    password_error_label = Label(form, font=(FONT_DEFAULT_NAME, 8), bootstyle="danger")
+    password_error_label.pack(anchor="w")
 
     # ── Remember me ───────────────────────────────────────────────────────────
-
     remember_var = tk.BooleanVar()
     remember_row = tk.Frame(form, bg="white")
     remember_row.pack(anchor="w", pady=(0, 10))
@@ -182,12 +176,6 @@ def open_login_window(window, on_success=None):
         fg="black",
         bg="white",
     ).pack(side=LEFT)
-
-    # ── Auth error (wrong credentials) ───────────────────────────────────────
-
-    auth_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 9),
-                                fg="#dc3545", bg="white", anchor="w")
-    auth_error_label.pack(fill="x", pady=(0, 8))
 
     # ── Login button — ttkbootstrap dark style ────────────────────────────────
 

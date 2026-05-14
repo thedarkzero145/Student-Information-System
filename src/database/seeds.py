@@ -6,6 +6,7 @@ courses = (
     ('BSBA',)
 )
 
+
 admin = [('admin', 'Admin@Admin123')]
 student = [('25-0000', "Cleven", "Castillo", 'Demo@Cleven12!', 1)]
 subjects = [('Introduction to Intermediate Programming', 'CC3', 'John Christian Lorr', 1, 0.00, 3)]
