@@ -43,10 +43,5 @@ def main() -> None:
 
         window.mainloop()
 
-def on_hover(event):
-        event.widget.config(background="#d9534f", foreground="white")
-def on_leave(event):
-        event.widget.config(background=CUSTOM_BACKGROUND_COLOR, foreground="#d9534f")
-
 if __name__ == "__main__":
         main()
