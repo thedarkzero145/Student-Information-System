@@ -1,8 +1,5 @@
 import os
-from dotenv import load_dotenv
 import re
-
-load_dotenv()
 import tkinter as tk
 from PIL import Image, ImageTk
 from ttkbootstrap import Frame, Label, Button, Entry, Checkbutton, Toplevel
@@ -14,10 +11,10 @@ from src.backend.backend import validate_auth, save_credentials_state, get_crede
 from ttkbootstrap.toast import ToastNotification
 
 # [DEV ONLY] Easy Login Bypasses - Remove in Production
-DEMO_USERNAME  = os.getenv("DEMO_USERNAME", "2")
-DEMO_PASSWORD  = os.getenv("DEMO_PASSWORD", "2")
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "1")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "1")
+DEMO_USERNAME  = "2"
+DEMO_PASSWORD  = "2"
+ADMIN_USERNAME = "1"
+ADMIN_PASSWORD = "1"
 
 
 def open_login_window(window, conn, on_success=None):

@@ -1,8 +1,4 @@
 import tkinter as tk
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 NAV_BG        = "#001f5b"
 WHITE         = "#ffffff"
@@ -37,10 +33,10 @@ def build_dashboard_tab(parent, switch_cb):
         tk.Label(txt_f, text=val, font=("Segoe UI", 24, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w")
         return outer
 
-    _stat_card(stats_f, "Total Students", os.getenv("ADMIN_HOME_TOTAL_STUDENTS", "1,245"), "👥")
-    _stat_card(stats_f, "Active Subjects", os.getenv("ADMIN_HOME_ACTIVE_SUBJECTS", "142"), "📚")
-    _stat_card(stats_f, "Upcoming Events", os.getenv("ADMIN_HOME_UPCOMING_EVENTS", "12"), "🎉")
-    c4 = _stat_card(stats_f, "Announcements", os.getenv("ADMIN_HOME_ANNOUNCEMENTS", "3"), "🔊")
+    _stat_card(stats_f, "Total Students", "", "\U0001f465")
+    _stat_card(stats_f, "Active Subjects", "", "\U0001f4da")
+    _stat_card(stats_f, "Upcoming Events", "", "\U0001f389")
+    c4 = _stat_card(stats_f, "Announcements", "", "\U0001f50a")
     c4.pack_configure(padx=0)
 
     # Graphs Row
@@ -58,24 +54,7 @@ def build_dashboard_tab(parent, switch_cb):
     
     def _draw_bar_chart(e):
         c_bar.delete("all")
-        w, h = e.width, e.height
-        env_data = os.getenv("ADMIN_HOME_BAR_DATA", "2022|800,2023|950,2024|1100,2025|1050,2026|1245")
-        data = []
-        for pair in env_data.split(","):
-            year, val = pair.split("|")
-            data.append((year, int(val)))
-        max_val = 1500
-        bar_w = 40
-        spacing = (w - (bar_w * len(data))) / (len(data) + 1)
-        
-        for i, (year, val) in enumerate(data):
-            x = spacing + i * (bar_w + spacing)
-            bar_h = (val / max_val) * (h - 40)
-            y = h - 30 - bar_h
-            
-            c_bar.create_rectangle(x, y, x + bar_w, h - 30, fill=NAV_BG, outline="")
-            c_bar.create_text(x + bar_w/2, h - 15, text=year, font=("Segoe UI", 9), fill=TEXT_MUTED)
-            c_bar.create_text(x + bar_w/2, y - 10, text=str(val), font=("Segoe UI", 9, "bold"), fill=TEXT_PRIMARY)
+        # No data — will be populated by database
 
     c_bar.bind("<Configure>", _draw_bar_chart)
 
@@ -90,26 +69,6 @@ def build_dashboard_tab(parent, switch_cb):
 
     def _draw_pie_chart(e):
         c_pie.delete("all")
-        w, h = e.width, e.height
-        cx, cy = w/2, h/2 - 10
-        r = min(w, h)/2 - 30
-        
-        env_data = os.getenv("ADMIN_HOME_PIE_DATA", "BSIT|45|#2563eb,BSCS|25|#16a34a,BSBA|20|#d97706,Other|10|#94a3b8")
-        data = []
-        for triplet in env_data.split(","):
-            label, pct, color = triplet.split("|")
-            data.append((label, int(pct), color))
-        
-        start_ang = 0
-        for label, pct, col in data:
-            extent = (pct / 100) * 360
-            c_pie.create_arc(cx-r, cy-r, cx+r, cy+r, start=start_ang, extent=extent, fill=col, outline=WHITE, width=2)
-            start_ang += extent
-            
-        # Legend
-        leg = cx - 100
-        for i, (label, pct, col) in enumerate(data):
-            c_pie.create_rectangle(leg + i*50, h-15, leg + i*50 + 10, h-5, fill=col, outline="")
-            c_pie.create_text(leg + i*50 + 15, h-10, text=label, font=("Segoe UI", 8), fill=TEXT_MUTED, anchor="w")
+        # No data — will be populated by database
 
     c_pie.bind("<Configure>", _draw_pie_chart)

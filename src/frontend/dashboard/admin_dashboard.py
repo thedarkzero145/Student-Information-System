@@ -1,11 +1,3 @@
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-from src.frontend.services.dashboard_service import DashboardService
-
-# Initialize the Dashboard Service
-service = DashboardService()
 import tkinter as tk
 from tkinter import ttk as tkttk
 from PIL import Image, ImageTk
@@ -191,10 +183,9 @@ def build_dashboard_tab(parent, switch_cb):
     cards_row = tk.Frame(parent, bg=CONTENT_BG)
     cards_row.pack(fill="x", padx=24, pady=(22, 16))
 
-    stats = service.get_student_stats()
-    total_students = stats["total"]
-    active_students = stats["active"]
-    inactive_students = stats["inactive"]
+    total_students = ""
+    active_students = ""
+    inactive_students = ""
 
     _stat_card(cards_row, "Total Students",    total_students, None,
                "👥", trend_text="2.4%  from last semester")
@@ -253,9 +244,8 @@ def build_dashboard_tab(parent, switch_cb):
     tree.column("course", width=200, anchor="center", minwidth=130)
     tree.column("year",   width=70,  anchor="center", minwidth=50)
 
-    DEMO_STUDENTS = service.get_recent_enrollments()
-    for row in DEMO_STUDENTS:
-        tree.insert("", "end", values=row)
+    # No data — will be populated by database
+    pass
 
     # Double click opens student profile
     tree.bind("<Double-1>", lambda e: switch_cb("Student Profile"))
@@ -279,13 +269,12 @@ def build_dashboard_tab(parent, switch_cb):
 
     campus_overlay = tk.Frame(campus_frame, bg="#0d2447")
     campus_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-    campus_stats = service.get_campus_stats()
-    tk.Label(campus_overlay, text=campus_stats["name"],
+    tk.Label(campus_overlay, text="",
              font=("Segoe UI", 11, "bold"), fg=WHITE, bg="#0d2447",
              anchor="w", wraplength=260, justify="left").pack(anchor="w",
                                                               padx=16, pady=(24, 4))
     tk.Label(campus_overlay,
-             text=campus_stats["subtitle"],
+             text="",
              font=("Segoe UI", 9), fg="#aab4c8", bg="#0d2447",
              anchor="w", wraplength=260, justify="left").pack(anchor="w", padx=16)
 
@@ -300,11 +289,8 @@ def build_dashboard_tab(parent, switch_cb):
     tk.Label(dept_pad, text="Department Load", font=("Segoe UI", 11, "bold"),
              fg=TEXT_PRIMARY, bg=WHITE, anchor="w").pack(anchor="w", pady=(0, 8))
 
-    dept_data = service.get_department_load()
-    TOTAL = dept_data["total"]
-
-    for dept in dept_data["departments"]:
-        _dept_bar(dept_pad, dept["name"], dept["count"], TOTAL)
+    # No data — will be populated by database
+    pass
 
     tk.Button(dept_pad, text="View Full Analytics",
               font=("Segoe UI", 10), fg=TEXT_PRIMARY, bg=WHITE,
@@ -336,10 +322,8 @@ def build_student_profile_tab(parent, switch_cb):
     avatar = tk.Label(avatar_wrap, text="👤", font=("Segoe UI Emoji", 48), fg="#cbd5e1", bg="#f1f5f9", width=3, height=1)
     avatar.pack(pady=10)
     
-    profile = service.get_student_profile()
-    
-    tk.Label(left_inner, text=profile["name"], font=("Segoe UI", 16, "bold"), fg=NAV_BG, bg=CARD_BG).pack()
-    tk.Label(left_inner, text=profile["program"], font=("Segoe UI", 10), fg=TEXT_MUTED, bg=CARD_BG).pack()
+    tk.Label(left_inner, text="", font=("Segoe UI", 16, "bold"), fg=NAV_BG, bg=CARD_BG).pack()
+    tk.Label(left_inner, text="", font=("Segoe UI", 10), fg=TEXT_MUTED, bg=CARD_BG).pack()
     
     # Badges
     badges = tk.Frame(left_inner, bg=CARD_BG)
@@ -357,10 +341,10 @@ def build_student_profile_tab(parent, switch_cb):
         tk.Label(r, text=label, font=("Segoe UI", 9, "bold"), fg=TEXT_MUTED, bg=CARD_BG).pack(side="left")
         tk.Label(r, text=val, font=("Segoe UI", 10), fg=TEXT_PRIMARY, bg=CARD_BG).pack(side="right")
         
-    _detail_row(det, "Student ID", profile["id"])
-    _detail_row(det, "Admission Date", "August 04, 2026")
-    _detail_row(det, "Email Address", "cleven.castillo10@plv.edu")
-    _detail_row(det, "Phone", "+1 (555) 012-3456")
+    _detail_row(det, "Student ID", "")
+    _detail_row(det, "Admission Date", "")
+    _detail_row(det, "Email Address", "")
+    _detail_row(det, "Phone", "")
     
     # Bottom Academic Summary Card
     acad = tk.Frame(left_inner, bg=NAV_BG)
@@ -372,12 +356,12 @@ def build_student_profile_tab(parent, switch_cb):
     grade = tk.Frame(acad_grid, bg="#1a3a7a")
     grade.pack(side="left", fill="both", expand=True, padx=(0, 4))
     tk.Label(grade, text="Grade", font=("Segoe UI", 8), fg="#aab4c8", bg="#1a3a7a").pack(anchor="w", padx=8, pady=(8, 0))
-    tk.Label(grade, text=profile["grade"], font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
+    tk.Label(grade, text="", font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
     
     cred = tk.Frame(acad_grid, bg="#1a3a7a")
     cred.pack(side="right", fill="both", expand=True, padx=(4, 0))
     tk.Label(cred, text="Credits", font=("Segoe UI", 8), fg="#aab4c8", bg="#1a3a7a").pack(anchor="w", padx=8, pady=(8, 0))
-    tk.Label(cred, text=profile["credits"], font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
+    tk.Label(cred, text="", font=("Segoe UI", 16, "bold"), fg=WHITE, bg="#1a3a7a").pack(anchor="w", padx=8, pady=(0, 8))
 
     # RIGHT COLUMN
     right_col = tk.Frame(cols, bg=CARD_BORDER)
@@ -732,11 +716,8 @@ def build_search_tab(parent, switch_cb):
         tree.heading(c, text=c)
         tree.column(c, anchor="w", width=150)
     
-    # Use service for search tab demo data
-    demo_data = service.get_recent_enrollments()
-    for row in demo_data:
-        # Assuming get_recent_enrollments returns 4 elements, append "Active" for status
-        tree.insert("", "end", values=list(row) + ["Active"])
+    # No data — will be populated by database
+    pass
     
     tree.pack(fill="both", expand=True)
 
@@ -764,15 +745,11 @@ def build_reports_tab(parent, switch_cb):
                 pdf.cell(200, 10, txt="Enchong Dee University - System Report", ln=1, align='C')
                 pdf.set_font("Arial", size=12)
                 pdf.cell(200, 10, txt="", ln=1)
-                report_data = service.get_report_data()
-                
-                pdf.cell(200, 10, txt=f"Total Students: {report_data['total_students']}", ln=1)
-                pdf.cell(200, 10, txt=f"Active Students: {report_data['active_students']}", ln=1)
-                pdf.cell(200, 10, txt=f"Inactive Students: {report_data['inactive_students']}", ln=1)
+                pdf.cell(200, 10, txt="Total Students: ", ln=1)
+                pdf.cell(200, 10, txt="Active Students: ", ln=1)
+                pdf.cell(200, 10, txt="Inactive Students: ", ln=1)
                 pdf.cell(200, 10, txt="", ln=1)
                 pdf.cell(200, 10, txt="Recent Enrollments:", ln=1)
-                for enroll in report_data['recent_enrollments']:
-                    pdf.cell(200, 10, txt=f"- | {enroll[0]} | {enroll[1]} | {enroll[2]}", ln=1)
                 
                 pdf.output(path)
                 
@@ -806,10 +783,9 @@ def build_reports_tab(parent, switch_cb):
         tk.Label(card, text=title, font=("Segoe UI", 10, "bold"), fg=WHITE, bg=color).pack(anchor="w", padx=16, pady=(16, 4))
         tk.Label(card, text=val, font=("Segoe UI", 24, "bold"), fg=WHITE, bg=color).pack(anchor="w", padx=16, pady=(0, 16))
         
-    report_data = service.get_report_data()
-    _metric(metrics_f, "Total Students", report_data['total_students'], "#2563eb") # blue
-    _metric(metrics_f, "Active Students", report_data['active_students'], "#16a34a") # green
-    _metric(metrics_f, "Inactive Students", report_data['inactive_students'], "#64748b") # slate
+    _metric(metrics_f, "Total Students", "", "#2563eb") # blue
+    _metric(metrics_f, "Active Students", "", "#16a34a") # green
+    _metric(metrics_f, "Inactive Students", "", "#64748b") # slate
 
     # Preview Table
     tk.Label(container, text="Recent Enrollments Preview", font=("Segoe UI", 12, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", padx=48, pady=(0, 16))
@@ -819,8 +795,7 @@ def build_reports_tab(parent, switch_cb):
     cols = ("Date", "ID", "Name", "Course")
     tree = tkttk.Treeview(grid_f, columns=cols, show="headings", height=10)
     for c in cols: tree.heading(c, text=c); tree.column(c, anchor="w", width=150)
-    for enroll in report_data['recent_enrollments']:
-        tree.insert("", "end", values=("2026-05-14", enroll[0], enroll[1], enroll[2]))
+    # No data — will be populated by database
     tree.pack(fill="both", expand=True)
 
 def build_settings_tab(parent, switch_cb):
