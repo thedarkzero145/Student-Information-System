@@ -4,7 +4,7 @@ import sys
 from ttkbootstrap import Style
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR
-
+from src.database.db_config import connect_db
 
 def main() -> None:
         # If this file is executed as a script (e.g., `python src/main.py`), Python adds
@@ -19,6 +19,10 @@ def main() -> None:
         from ttkbootstrap import Window
 
         window = Window()
+
+        # INITIALIZE DATABASE
+        conn = connect_db()
+
         # custom colors dont touch - aizen
         window.style.configure('BG_FRAME.TFrame', background=CUSTOM_BACKGROUND_COLOR)
         window.style.configure('BG_BUTTON.TButton', anchor="w", font=("Segoi UI", 10), padding=15, borderwidth=0, background=CUSTOM_BACKGROUND_COLOR)
@@ -28,11 +32,7 @@ def main() -> None:
         window.style.configure("BG_LABEL.TLabel", background=CUSTOM_BACKGROUND_COLOR, foreground="white")
         window.withdraw()
 
-        def on_login_success(login_win):
-                login_win.destroy()
-                open_dashboard_window(window)
-
-        open_login_window(window, on_success=on_login_success)
+        open_login_window(window, conn)
 
         window.mainloop()
 

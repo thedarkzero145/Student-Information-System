@@ -25,6 +25,8 @@ def connect_db():
     conn.execute("PRAGMA foreign_keys = ON")
     create_tables(conn)
     pre_seed_db(conn)
+
+    print("[DATABASE CONNECTION]: ESTABLISHED!")
     return conn
 
 def create_tables(conn):
@@ -34,7 +36,7 @@ def create_tables(conn):
     cursor.execute("""
                       CREATE TABLE IF NOT EXISTS ADMIN(
                           admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                          username TEXT NOT NULL,
+                          username TEXT NOT NULL UNIQUE,
                           password TEXT NOT NULL
                       )
                       """

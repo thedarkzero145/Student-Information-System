@@ -4,15 +4,15 @@ from PIL import Image, ImageTk
 from ttkbootstrap import Toplevel, Frame, Label, Separator, Button
 from ttkbootstrap.constants import LEFT, CENTER, BOTTOM
 from ttkbootstrap.icons import Emoji
-
 from constants import CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
 
-
 def open_dashboard_window(window):
+    root_window = window
     window = Toplevel(window)
     window.title("Dashboard")
     window.geometry("1000x600")
+
 
     apply_window_icon(window, calling_file=__file__)
 
@@ -126,6 +126,7 @@ def open_dashboard_window(window):
                            style="BG_BUTTON_DANGER.TButton"
                         )
     logout_btn.pack(fill="x")
+    
 
 def open_dashboard_frame(window):
     dashboard_frame = Frame(window)
@@ -141,6 +142,7 @@ def open_dashboard_frame(window):
     dashboard_frame.rowconfigure(1, weight=2)
     dashboard_frame.rowconfigure(2, weight=2)
     dashboard_frame.rowconfigure(3, weight=2)
+
     # ===== UPPER HEADER DASHBOARD ====
     header_dashboard = Frame(dashboard_frame)
     header_dashboard.grid(row=0, columnspan=5, sticky='nsew', padx=18)

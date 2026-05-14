@@ -1,32 +1,34 @@
 import os
-import re
 import tkinter as tk
+from tkinter import IntVar
+
 from PIL import Image, ImageTk
 from ttkbootstrap import Frame, Label, Button, Entry, Checkbutton, Toplevel
 from ttkbootstrap.constants import LEFT, DARK
 
-from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
+from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
+from src.backend.backend import validate_auth, save_credentials_state, get_credentials
+from src.frontend.dashboard.dashboard import open_dashboard_window
+from ttkbootstrap.toast import ToastNotification
 
-DEMO_USERNAME = "25-0000"
-DEMO_PASSWORD = "Demo@Admin12!"
-
-
-def open_login_window(window, on_success=None):
-
+def open_login_window(window, conn):
+    remember_var = IntVar()
     # ── Validation ────────────────────────────────────────────────────────────
     def user_validation(user):
-        pattern = r"^25-\d{4}$"
-        if re.fullmatch(pattern, user):
-            user_error_label.config(text="")
-            return True
-        else:
-            user_error_label.config(text="Username must start at 25- ex. [25-2751]")
+        if len(user) <= 0:
+            user_error_label.config(text="Username is required.")
             return False
 
+        user_error_label.config(text="")
+        return True
+
     def pass_validation(password):
-        if len(password) < 12:
-            password_error_label.config(text="Password must have at least 12 characters!")
+        if len(password) <= 0:
+            password_error_label.config(text="Password is required.")
+            return False
+        if len(password) > 0 and (len(password))< 4:
+            password_error_label.config(text="Password must have at least 4 characters!")
             return False
         if not any(c.isupper() for c in password):
             password_error_label.config(text="Password must have at least 1 uppercase letter!")
@@ -43,9 +45,11 @@ def open_login_window(window, on_success=None):
         password_error_label.config(text="")
         return True
 
+    def on_login_success():
+        win.withdraw()
+        open_dashboard_window(window)
 
     def on_submit():
-        print("clicked")
         username = user_input.get()
         password = password_input.get()
 
@@ -55,9 +59,34 @@ def open_login_window(window, on_success=None):
         if not is_user_validate or not is_password_validate:
             return
 
-        if username == DEMO_USERNAME and password == DEMO_PASSWORD:
-            if on_success:
-                on_success(win)
+        is_user_exist = validate_auth(conn, username, password)
+        print(is_user_exist)
+        if not is_user_exist:
+            user_error_label.config(text="Invalid Username or Password")
+            password_error_label.config(text="Invalid Username or Password")
+            return
+
+        if not remember_var.get() == 1:
+            # no remember me
+            on_login_success()
+
+            toast = ToastNotification(
+                title="Successfully login.",
+                message="Redirecting...",
+                duration=5000,
+            )
+            toast.show_toast()
+            return
+
+        save_credentials_state(username, password)
+        on_login_success()
+
+        toast = ToastNotification(
+            title="Successfully login.",
+            message="Redirecting...",
+            duration=5000,
+        )
+        toast.show_toast()
 
 
     # ── Window ────────────────────────────────────────────────────────────────
@@ -112,6 +141,7 @@ def open_login_window(window, on_success=None):
     ).pack(pady=(6, 0))
 
     # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
+
     right_frame = Frame(win)
     right_frame.place(relx=0.45, rely=0, relwidth=0.55, relheight=1.0)
 
@@ -143,6 +173,10 @@ def open_login_window(window, on_success=None):
     user_input = Entry(form, validate="focus", validatecommand=(user_validation_func, '%P'), font=(FONT_DEFAULT_NAME, 11))
     user_input.pack(fill="x", ipady=4, pady=(4, 8))
 
+    user_data = get_credentials("username")
+    if user_data:
+        user_input.insert(0, user_data)
+
     user_error_label =  Label(form, font=(FONT_DEFAULT_NAME, 8), bootstyle="danger")
     user_error_label.pack(anchor="w")
 
@@ -153,11 +187,16 @@ def open_login_window(window, on_success=None):
     password_input = Entry(form, validate="focus", validatecommand=(password_validation_func, '%P'), show="•", font=(FONT_DEFAULT_NAME, 11))
     password_input.pack(fill="x", ipady=4, pady=(4, 8))
 
+    password_data = get_credentials("password")
+    if user_data:
+        password_input.insert(0, password_data)
+
+
     password_error_label = Label(form, font=(FONT_DEFAULT_NAME, 8), bootstyle="danger")
     password_error_label.pack(anchor="w")
 
     # ── Remember me ───────────────────────────────────────────────────────────
-    remember_var = tk.BooleanVar()
+
     remember_row = tk.Frame(form, bg="white")
     remember_row.pack(anchor="w", pady=(0, 10))
 
@@ -192,7 +231,7 @@ def open_login_window(window, on_success=None):
 
     tk.Label(
         form,
-        text=f"Demo — user: {DEMO_USERNAME}  |  pass: {DEMO_PASSWORD}",
+        text=f"Demo — user: 25-0000  |  pass: Demo@Cleven12!",
         font=(FONT_DEFAULT_NAME, 8),
         fg="#aaaaaa",
         bg="white",
