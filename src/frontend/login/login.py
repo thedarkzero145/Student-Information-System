@@ -139,7 +139,7 @@ def open_login_window(window, conn):
         font=(FONT_DEFAULT_NAME, 10),
         style=CUSTOM_LABEL_NAME,
     ).pack(pady=(6, 0))
-
+    
     # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
 
     right_frame = Frame(win)
