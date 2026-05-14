@@ -7,6 +7,8 @@ from ttkbootstrap.constants import LEFT, DARK
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
+from src.backend.backend import validate_auth, save_credentials_state, get_credentials
+from ttkbootstrap.toast import ToastNotification
 
 # [DEV ONLY] Easy Login Bypasses - Remove in Production
 DEMO_USERNAME  = "2"
@@ -15,7 +17,7 @@ ADMIN_USERNAME = "1"
 ADMIN_PASSWORD = "1"
 
 
-def open_login_window(window, on_success=None):
+def open_login_window(window, conn, on_success=None):
 
     # ── Validation ────────────────────────────────────────────────────────────
 
@@ -78,7 +80,23 @@ def open_login_window(window, on_success=None):
         if not user_validation(username) or not pass_validation(password):
             return
 
-        auth_error_label.config(text="Invalid username or password.")
+        is_user_exist = validate_auth(conn, username, password)
+        if not is_user_exist:
+            auth_error_label.config(text="Invalid username or password.")
+            return
+
+        if remember_var.get():
+            save_credentials_state(username, password)
+
+        toast = ToastNotification(
+            title="Successfully login.",
+            message="Redirecting...",
+            duration=5000,
+        )
+        toast.show_toast()
+
+        if on_success:
+            on_success(win, "student")
 
     # ── Window ────────────────────────────────────────────────────────────────
 
@@ -173,6 +191,10 @@ def open_login_window(window, on_success=None):
     user_input.pack(fill="x", ipady=10, pady=(4, 0))
     user_input.bind("<FocusOut>", lambda e: user_validation(user_input.get()))
 
+    user_data = get_credentials("username")
+    if user_data:
+        user_input.insert(0, user_data)
+
     user_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
                                 fg="#dc3545", bg="white", anchor="w")
     user_error_label.pack(fill="x", pady=(2, 10))
@@ -187,6 +209,10 @@ def open_login_window(window, on_success=None):
                               insertbackground="black")
     password_input.pack(fill="x", ipady=10, pady=(4, 0))
     password_input.bind("<FocusOut>", lambda e: pass_validation(password_input.get()))
+
+    password_data = get_credentials("password")
+    if password_data:
+        password_input.insert(0, password_data)
 
     password_error_label = tk.Label(form, text="", font=(FONT_DEFAULT_NAME, 8),
                                     fg="#dc3545", bg="white", anchor="w")

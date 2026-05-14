@@ -1,18 +1,19 @@
 import os
 import sys
 
+# If this file is executed as a script (e.g., `python src/main.py`), Python adds
+# `src/` (not the project root) to sys.path, so `import src...` fails.
+if __package__ in (None, ""):
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        if project_root not in sys.path:
+                sys.path.insert(0, project_root)
+
 from ttkbootstrap import Style
 
 from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR
-
+from src.database.db_config import connect_db
 
 def main() -> None:
-        # If this file is executed as a script (e.g., `python src/main.py`), Python adds
-        # `src/` (not the project root) to sys.path, so `import src...` fails.
-        if __package__ in (None, ""):
-                project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-                if project_root not in sys.path:
-                        sys.path.insert(0, project_root)
 
         from src.frontend.login.login import open_login_window
         from src.frontend.dashboard.dashboard import open_dashboard_window
@@ -20,6 +21,10 @@ def main() -> None:
         from ttkbootstrap import Window
 
         window = Window()
+
+        # INITIALIZE DATABASE
+        conn = connect_db()
+
         # custom colors dont touch - aizen
         window.style.configure('BG_FRAME.TFrame', background=CUSTOM_BACKGROUND_COLOR)
         window.style.configure('BG_BUTTON.TButton', anchor="w", font=("Segoi UI", 10), padding=15, borderwidth=0, background=CUSTOM_BACKGROUND_COLOR)
@@ -33,14 +38,14 @@ def main() -> None:
                 login_win.destroy()
                 if role == "admin":
                         def on_logout():
-                                open_login_window(window, on_success=on_login_success)
+                                open_login_window(window, conn, on_success=on_login_success)
                         open_admin_dashboard(window, on_logout=on_logout)
                 else:
                         def on_logout():
-                                open_login_window(window, on_success=on_login_success)
+                                open_login_window(window, conn, on_success=on_login_success)
                         open_dashboard_window(window, on_logout=on_logout)
 
-        open_login_window(window, on_success=on_login_success)
+        open_login_window(window, conn, on_success=on_login_success)
 
         window.mainloop()
 

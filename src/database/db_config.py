@@ -25,6 +25,8 @@ def connect_db():
     conn.execute("PRAGMA foreign_keys = ON")
     create_tables(conn)
     pre_seed_db(conn)
+
+    print("[DATABASE CONNECTION]: ESTABLISHED!")
     return conn
 
 def create_tables(conn):
@@ -34,7 +36,7 @@ def create_tables(conn):
     cursor.execute("""
                       CREATE TABLE IF NOT EXISTS ADMIN(
                           admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                          username TEXT NOT NULL,
+                          username TEXT NOT NULL UNIQUE,
                           password TEXT NOT NULL
                       )
                       """
@@ -71,12 +73,49 @@ def create_tables(conn):
                            subject_code TEXT NOT NULL,
                            teacher TEXT NOT NULL,
                            course_id TEXT NOT NULL,
+                           units REAL NOT NULL,
                            gwa REAL,
-                           units REAL,
                            
                            FOREIGN KEY (course_id) REFERENCES COURSES(course_id)
                        )
                        """
                    )
+
+
+    conn.commit()
+
+
+    # ==== EVENTS TABLE ====
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS EVENTS (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER,
+            title TEXT NOT NULL,
+            event_type TEXT NOT NULL,      -- 'exam', 'quiz', 'assignment', 'activity'
+            event_date DATE NOT NULL,
+            start_time TIME,
+            end_time TIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            
+            FOREIGN KEY (course_id) REFERENCES COURSES(id)
+        );
+    """
+    )
+    conn.commit()
+
+    # ==== ANNOUNCEMENTS TABLE ====
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ANNOUNCEMENTS (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            posted_by INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            
+            FOREIGN KEY (course_id) REFERENCES COURSES(course_id),
+            FOREIGN KEY (posted_by) REFERENCES ADMIN(admin_id)
+        );
+    """)
 
     conn.commit()
