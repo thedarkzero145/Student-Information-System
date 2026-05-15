@@ -264,22 +264,45 @@ def open_dashboard_window(window, conn, on_logout=None):
 
     # ── SIDEBAR ───────────────────────────────────────────────────────────────
     SIDEBAR_W = 260
-    sidebar_canvas = tk.Canvas(win, width=SIDEBAR_W, bg=NAV_BG,
-                               highlightthickness=0, borderwidth=0, bd=0)
-    sidebar_canvas.grid(row=0, column=0, sticky="nsew")
+    sidebar_container = tk.Frame(win, bg=NAV_BG, width=SIDEBAR_W)
+    sidebar_container.grid(row=0, column=0, sticky="nsew")
+    sidebar_container.grid_propagate(False)
+
+    # Logout (bottom) - PINNED TO BOTTOM OF CONTAINER
+    bottom = tk.Frame(sidebar_container, bg=NAV_BG, highlightthickness=0, bd=0)
+    bottom.pack(side="bottom", fill="x", padx=4, pady=8)
+
+    sidebar_scrollbar = tkttk.Scrollbar(sidebar_container, orient="vertical")
+    sidebar_scrollbar.pack(side="right", fill="y")
+
+    sidebar_canvas = tk.Canvas(sidebar_container, bg=NAV_BG,
+                               highlightthickness=0, borderwidth=0, bd=0, yscrollcommand=sidebar_scrollbar.set)
+    sidebar_canvas.pack(side="left", fill="both", expand=True)
+    sidebar_scrollbar.configure(command=sidebar_canvas.yview)
 
     sidebar = tk.Frame(sidebar_canvas, bg=NAV_BG, highlightthickness=0, bd=0)
     _sb_win = sidebar_canvas.create_window(0, 0, anchor="nw",
-                                           window=sidebar, width=SIDEBAR_W)
+                                           window=sidebar)
 
     def _resize_sb(e):
-        sidebar_canvas.itemconfig(_sb_win, width=e.width, height=e.height)
+        sidebar_canvas.itemconfig(_sb_win, width=e.width)
+        sidebar_canvas.configure(scrollregion=sidebar_canvas.bbox("all"))
         sidebar_canvas.delete("bg_rect")
-        sidebar_canvas.create_rectangle(0, 0, e.width, e.height,
-                                        fill=NAV_BG, outline="", tags="bg_rect")
+        sidebar_canvas.create_rectangle(0, 0, e.width, max(e.height, sidebar.winfo_reqheight()), fill=NAV_BG, outline="", tags="bg_rect")
         sidebar_canvas.tag_lower("bg_rect")
 
     sidebar_canvas.bind("<Configure>", _resize_sb)
+    sidebar.bind("<Configure>", lambda e: sidebar_canvas.configure(scrollregion=sidebar_canvas.bbox("all")))
+
+    def _on_mousewheel(event):
+        if sidebar.winfo_reqheight() > sidebar_canvas.winfo_height():
+            if hasattr(event, 'delta') and event.delta:
+                sidebar_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            elif event.num == 4: sidebar_canvas.yview_scroll(-1, "units")
+            elif event.num == 5: sidebar_canvas.yview_scroll(1, "units")
+
+    sidebar_container.bind("<Enter>", lambda e: sidebar_container.bind_all("<MouseWheel>", _on_mousewheel) or sidebar_container.bind_all("<Button-4>", _on_mousewheel) or sidebar_container.bind_all("<Button-5>", _on_mousewheel))
+    sidebar_container.bind("<Leave>", lambda e: sidebar_container.unbind_all("<MouseWheel>") or sidebar_container.unbind_all("<Button-4>") or sidebar_container.unbind_all("<Button-5>"))
 
     # Logo row
     logo_row = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
@@ -385,7 +408,7 @@ def open_dashboard_window(window, conn, on_logout=None):
             print(f"Failed to load icon {filename}: {e}")
 
     # Load image icons into nav buttons
-    _apply_nav_icon(btn_dashboard, lbl_dash, "student-50.png", (22, 22))
+    _apply_nav_icon(btn_dashboard, lbl_dash, "dashboard-50.png", (22, 22))
     _apply_nav_icon(btn_grades, lbl_grades, "rating-64.png", (22, 22))
     _apply_nav_icon(btn_subjects, lbl_subjects, "elective-50.png", (22, 22))
     _apply_nav_icon(btn_ann, lbl_ann, "announcement-64.png", (22, 22))
@@ -393,9 +416,7 @@ def open_dashboard_window(window, conn, on_logout=None):
     _apply_nav_icon(btn_settings, lbl_set, "settings-24.png", (22, 22))
 
 
-    # Logout (bottom)
-    bottom = tk.Frame(sidebar, bg=NAV_BG, highlightthickness=0, bd=0)
-    bottom.pack(side="bottom", fill="x", padx=4, pady=8)
+    # Logout (bottom) is already packed above in sidebar_container
     tk.Frame(bottom, bg="#1e3d7a", height=1,
              highlightthickness=0, bd=0).pack(fill="x", padx=14, pady=(0, 6))
 
