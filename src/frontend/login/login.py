@@ -65,18 +65,15 @@ def open_login_window(window, conn, on_login_success):
             password_error_label.config(text="Invalid Username or Password")
             return
 
-        print("USER EXIST!", is_user_exist)
-
+        role = is_user_exist[1]
 
         if not remember_var.get() == 1:
-            role = is_user_exist[1]
 
             print("ROLE: ", role)
             if not role:
                 print("[LOGIN AUTH]: NO ROLE PROVIDED!")
                 return
 
-            save_credentials_state(username, password)
             on_login_success(win, role)
 
             toast = ToastNotification(
@@ -85,15 +82,17 @@ def open_login_window(window, conn, on_login_success):
                 duration=5000,
             )
             toast.show_toast()
+        else:
+            save_credentials_state(username, password)
+            on_login_success(win, role)
+            # no remember me
+            toast = ToastNotification(
+                title="Successfully login.",
+                message="Redirecting...",
+                duration=5000,
+            )
 
-        print("REMEMBER ME IS NOT TURN ON")
-        # no remember me
-        toast = ToastNotification(
-            title="Successfully login.",
-            message="Redirecting...",
-            duration=5000,
-        )
-        toast.show_toast()
+            toast.show_toast()
 
 
     # ── Window ────────────────────────────────────────────────────────────────

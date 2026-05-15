@@ -1091,7 +1091,7 @@ def open_admin_dashboard(window, conn, on_logout=None):
     def do_logout():
         win.destroy()
         if on_logout:
-            on_logout()
+            on_logout(window)
 
     for w in (logout_f, lo_inner, lbl_lo_icon, lbl_lo_text):
         w.bind("<Button-1>", lambda e: do_logout())
