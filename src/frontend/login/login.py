@@ -6,16 +6,15 @@ from PIL import Image, ImageTk
 from ttkbootstrap import Frame, Label, Button, Entry, Checkbutton, Toplevel
 from ttkbootstrap.constants import LEFT, DARK
 
-from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
+from constants import FONT_DEFAULT_NAME, CUSTOM_BACKGROUND_COLOR, CUSTOM_BACKGROUND_NAME, CUSTOM_LABEL_NAME
 from icon_utils import apply_window_icon
 from src.backend.backend import validate_auth, save_credentials_state, get_credentials
-from src.frontend.dashboard.dashboard import open_dashboard_window
 from ttkbootstrap.toast import ToastNotification
 
-def open_login_window(window, conn):
+def open_login_window(window, conn, on_login_success):
     remember_var = IntVar()
-
     # ── Validation ────────────────────────────────────────────────────────────
+
     def user_validation(user):
         if len(user) <= 0:
             user_error_label.config(text="Username is required.")
@@ -46,30 +45,39 @@ def open_login_window(window, conn):
         password_error_label.config(text="")
         return True
 
-    def on_login_success():
-        win.withdraw()
-        open_dashboard_window(window)
-
     def on_submit():
         username = user_input.get()
         password = password_input.get()
 
+        print(username)
+        print(password)
         is_user_validate = user_validation(username)
         is_password_validate = pass_validation(password)
 
         if not is_user_validate or not is_password_validate:
+            print("EITHER BOTH INPUT IS NOT VALIDATED!")
             return
 
         is_user_exist = validate_auth(conn, username, password)
-        print(is_user_exist)
+
         if not is_user_exist:
             user_error_label.config(text="Invalid Username or Password")
             password_error_label.config(text="Invalid Username or Password")
             return
 
+        print("USER EXIST!", is_user_exist)
+
+
         if not remember_var.get() == 1:
-            # no remember me
-            on_login_success()
+            role = is_user_exist[1]
+
+            print("ROLE: ", role)
+            if not role:
+                print("[LOGIN AUTH]: NO ROLE PROVIDED!")
+                return
+
+            save_credentials_state(username, password)
+            on_login_success(win, role)
 
             toast = ToastNotification(
                 title="Successfully login.",
@@ -77,11 +85,9 @@ def open_login_window(window, conn):
                 duration=5000,
             )
             toast.show_toast()
-            return
 
-        save_credentials_state(username, password)
-        on_login_success()
-
+        print("REMEMBER ME IS NOT TURN ON")
+        # no remember me
         toast = ToastNotification(
             title="Successfully login.",
             message="Redirecting...",
@@ -93,8 +99,17 @@ def open_login_window(window, conn):
     # ── Window ────────────────────────────────────────────────────────────────
 
     win = Toplevel(window)
-    win.title("Login")
-    win.geometry("1000x600")
+    win.title("Enchong Dee University Student Information System")
+
+    # Center the login window
+    width = 1000
+    height = 600
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = max(0, int((screen_width / 2) - (width / 2)))
+    y = max(0, int((screen_height / 2) - (height / 2)))
+
+    win.geometry(f"{width}x{height}+{x}+{y}")
     win.resizable(False, False)
 
     user_validation_func = win.register(user_validation)
@@ -140,7 +155,7 @@ def open_login_window(window, conn):
         font=(FONT_DEFAULT_NAME, 10),
         style=CUSTOM_LABEL_NAME,
     ).pack(pady=(6, 0))
-
+    
     # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
 
     right_frame = Frame(win)
@@ -189,7 +204,7 @@ def open_login_window(window, conn):
     password_input.pack(fill="x", ipady=4, pady=(4, 8))
 
     password_data = get_credentials("password")
-    if user_data:
+    if password_data:
         password_input.insert(0, password_data)
 
 

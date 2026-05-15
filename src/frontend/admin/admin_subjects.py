@@ -1,0 +1,99 @@
+import tkinter as tk
+from tkinter import ttk as tkttk
+
+NAV_BG        = "#001f5b"
+WHITE         = "#ffffff"
+TEXT_PRIMARY  = "#111827"
+TEXT_MUTED    = "#6b7280"
+CARD_BORDER   = "#e2e8f0"
+
+def build_subjects_list_tab(parent, switch_cb):
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    # Header
+    top_bar = tk.Frame(container, bg=WHITE)
+    top_bar.pack(fill="x", pady=(48, 16), padx=48)
+    tk.Label(top_bar, text="Subject Management", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(side="left")
+
+    btn_add = tk.Button(top_bar, text="➕ Add Subject", font=("Segoe UI", 9, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=6, cursor="hand2", command=lambda: switch_cb("Add Subject"))
+    btn_add.pack(side="right")
+
+    tk.Frame(container, bg=CARD_BORDER, height=1).pack(fill="x", padx=48, pady=16)
+
+    # Search / Filter Bar
+    filter_f = tk.Frame(container, bg=WHITE)
+    filter_f.pack(fill="x", padx=48, pady=(0, 16))
+    
+    search_bg = tk.Frame(filter_f, bg="#f4f4f5", height=40)
+    search_bg.pack(side="left", fill="x", expand=True, padx=(0, 16))
+    search_bg.pack_propagate(False)
+    e_search = tk.Entry(search_bg, font=("Segoe UI", 10), bg="#f4f4f5", fg=TEXT_PRIMARY, relief="flat", bd=0)
+    e_search.pack(fill="both", expand=True, padx=16, pady=8)
+    e_search.insert(0, "Search by course code or title...")
+
+    btn_search = tk.Button(filter_f, text="Search", font=("Segoe UI", 9, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=16, pady=4, cursor="hand2")
+    btn_search.pack(side="left")
+
+    # Table
+    table_f = tk.Frame(container, bg=WHITE, highlightthickness=1, highlightbackground=CARD_BORDER)
+    table_f.pack(fill="both", expand=True, padx=48, pady=(0, 48))
+
+    cols = ("code", "title", "units", "dept", "status")
+    tree = tkttk.Treeview(table_f, columns=cols, show="headings", height=15)
+    
+    tree.heading("code", text="Course Code")
+    tree.heading("title", text="Course Title")
+    tree.heading("units", text="Units")
+    tree.heading("dept", text="Department")
+    tree.heading("status", text="Status")
+    
+    tree.column("code", width=100)
+    tree.column("title", width=300)
+    tree.column("units", width=50, anchor="center")
+    tree.column("dept", width=150)
+    tree.column("status", width=100, anchor="center")
+    
+    tree.pack(fill="both", expand=True)
+    
+    # No data — will be populated by database
+
+
+def build_add_subject_tab(parent, switch_cb):
+    container = tk.Frame(parent, bg=WHITE)
+    container.pack(fill="both", expand=True)
+
+    tk.Label(container, text="Add New Subject", font=("Georgia", 24), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(48, 16), padx=120)
+    tk.Frame(container, bg=CARD_BORDER, height=1).pack(fill="x", padx=120, pady=16)
+
+    form = tk.Frame(container, bg=WHITE)
+    form.pack(fill="both", expand=True, padx=120)
+
+    def _make_field(parent_frame, label_text, placeholder):
+        f = tk.Frame(parent_frame, bg=WHITE)
+        f.pack(fill="x", pady=(0, 24))
+        tk.Label(f, text=label_text, font=("Segoe UI", 9, "bold"), fg=TEXT_PRIMARY, bg=WHITE).pack(anchor="w", pady=(0, 8))
+        inner = tk.Frame(f, bg="#f4f4f5", height=48)
+        inner.pack(fill="x"); inner.pack_propagate(False)
+        e = tk.Entry(inner, font=("Segoe UI", 10), bg="#f4f4f5", fg=TEXT_PRIMARY, relief="flat", bd=0, insertbackground=TEXT_PRIMARY)
+        e.pack(fill="both", expand=True, padx=16, pady=12)
+        e.insert(0, placeholder)
+
+    _make_field(form, "Course Code", "e.g. CS 101")
+    _make_field(form, "Course Title", "e.g. Introduction to Computing")
+    _make_field(form, "Units", "e.g. 3")
+    _make_field(form, "Department", "e.g. BS Information Technology")
+
+    def show_notification(e=None):
+        notif = tk.Frame(container, bg="#10b981", highlightthickness=0)
+        notif.place(relx=1.0, rely=0.0, x=-32, y=32, anchor="ne")
+        tk.Label(notif, text="✓ Subject added successfully", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#10b981", padx=16, pady=12).pack()
+        container.after(3000, notif.destroy)
+        switch_cb("Subjects List")
+
+    footer = tk.Frame(form, bg=WHITE)
+    footer.pack(fill="x", pady=(32, 0))
+    btn_add = tk.Button(footer, text="Save Subject", font=("Segoe UI", 10, "bold"), fg=WHITE, bg=NAV_BG, relief="flat", padx=32, pady=8, cursor="hand2", command=show_notification)
+    btn_add.pack(side="left")
+    btn_cancel = tk.Button(footer, text="Cancel", font=("Segoe UI", 10, "bold"), fg=NAV_BG, bg=WHITE, relief="solid", bd=1, padx=32, pady=8, cursor="hand2", command=lambda: switch_cb("Subjects List"))
+    btn_cancel.pack(side="left", padx=(16, 0))

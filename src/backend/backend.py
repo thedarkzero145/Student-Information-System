@@ -5,7 +5,6 @@ def validate_auth(conn, username: str, password: str):
     try:
         with conn:
             cursor = conn.cursor()
-
             query = """
                    SELECT * FROM ADMIN
                    WHERE username = ? AND password = ?
@@ -16,7 +15,7 @@ def validate_auth(conn, username: str, password: str):
             row: list = cursor.fetchone()
 
             if row is not None:
-                return row[0]
+                return [row[0], "admin"]
 
 
             query = """
@@ -29,7 +28,7 @@ def validate_auth(conn, username: str, password: str):
             row: list = cursor.fetchone()
 
             if row is not None:
-                return row[0]
+                return [row[0], "student"]
 
             return None
 

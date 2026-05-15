@@ -1,226 +1,144 @@
+# Enchong Dee University Student Information System
 
-# Student Information System (SIS)
+A desktop application for managing student academic records. Built as a CC3 Intermediate Programming Final Project.
 
-CC3 **Intermediate Programming** — Final Project
-
-This repository contains a work-in-progress **Student Information System (SIS)** desktop application written in **Python** using **Tkinter/ttkbootstrap** for the UI.
-
-The current implementation focuses on the initial **Login screen UI** and project scaffolding (frontend/backend separation). Additional SIS functionality (student records, searching, CRUD operations, persistence, etc.) is intended to be added as the project evolves.
+This system is for universities that need a simple way for students to view their grades, schedule, and announcements, and for administrators to manage student data, subjects, events, and reports.
 
 ---
 
-## Table of contents
+## Features
 
-- [Project goals](#project-goals)
-- [Current status](#current-status)
-- [Tech stack](#tech-stack)
-- [Project structure](#project-structure)
-- [How to run](#how-to-run)
-- [How the app is organized](#how-the-app-is-organized)
-- [Troubleshooting](#troubleshooting)
-- [Roadmap (planned features)](#roadmap-planned-features)
+### Login System
 
----
+- Separate login flow for students and administrators.
+- Input validation shows inline error messages before submission.
+- After login, users are sent to the correct dashboard for their role.
 
-## Project goals
+### Student Dashboard
 
-As a CC3 Intermediate Programming final project, this app aims to demonstrate:
+- Shows your name, student ID, and program at the top.
+- View your classes for the day on a schedule timeline.
+- See your current grade average, attendance, and credits earned.
+- Tabs for Grades, Subjects, Announcements, Events, and Settings.
 
-- **Modular project structure** (separating UI/logic/data concerns)
-- **GUI development** (layout, theming, reusable views)
-- **Basic application architecture** (an entry point that launches screens)
-- **Input validation and user flow** (login, navigation, and error handling)
-- **Foundations for data handling** (a backend layer that can later connect to a database/file storage)
+### Admin Dashboard
 
----
-
-## Current status
-
-Implemented today:
-
-- A themed desktop window using **ttkbootstrap** ("darkly" theme)
-- A **Login window UI** with:
-	- Left-side branding panel and logo image
-	- Username + password fields
-	- "Remember me" checkbox
-	- Login button (UI only — login logic is not wired yet)
-
-Not implemented yet (planned):
-
-- Authentication logic (validating credentials)
-- Student information views (list/detail)
-- Data persistence (database/file)
-- Backend services (actual logic beyond placeholders)
+- Overview cards showing total students, active students, and inactive students.
+- A full students table with search and filter by course, year level, and status.
+- Add, edit, and remove student records.
+- Manage subjects, campus events, and announcements.
+- Generate and export a system report as a PDF from the Reports tab.
+- Department load breakdown with visual progress bars.
+- System settings for academic year and semester configuration.
 
 ---
 
-## Tech stack
+## How to Run
 
-- **Python** (tested with Python 3.11+)
-- **Tkinter** (bundled with most Python installs)
-- **ttkbootstrap** (modern themed widgets)
-
----
-
-## Project structure
-
-High-level layout:
-
-```
-Student-Information-System/
-├─ Readme.md
-└─ src/
-	 ├─ main.py
-	 ├─ backend/
-	 │  └─ backend.py
-	 └─ frontend/
-			└─ login/
-				 ├─ login.py
-				 └─ assets/
-						└─ plv-logo.png
-```
-
-What each part is for:
-
-- `src/main.py`
-	- App entry point.
-	- Creates the root window, applies the theme, and opens the login UI.
-
-- `src/frontend/login/login.py`
-	- Defines `open_login_window(...)` which builds the login screen using ttkbootstrap widgets.
-	- Loads the logo image from `src/frontend/login/assets/plv-logo.png`.
-
-- `src/backend/backend.py`
-	- Placeholder for backend logic (e.g., authentication, student record operations).
-	- This file is intended to evolve as you add data access and business rules.
-
----
-
-## How to run
-
-### 1) Prerequisites
-
-- Windows 10/11 (recommended for this project)
-- Python **3.11+** installed
-- `pip` available in your PATH
-
-To confirm Python:
+**Step 1. Check that Python 3.11 or newer is installed.**
 
 ```bash
 python --version
 ```
 
-### 2) (Recommended) Create and activate a virtual environment
+If the output shows a version below 3.11, download the latest Python from https://python.org before continuing.
 
-From the repository root:
+**Step 2. Open a terminal in the project root folder.** This is the folder that contains `src/` and `assets/`. If you are inside `src/`, go one level up.
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-### 3) Install dependencies
-
-This project currently depends on `ttkbootstrap`:
+**Step 3. Install the required packages.**
 
 ```bash
-pip install ttkbootstrap
+pip install ttkbootstrap pillow fpdf
 ```
 
-### 4) Start the application
-
-From the repository root, run the module entry point:
+**Step 4. Run the application.**
 
 ```bash
-python -m src.main
+python src/main.py
 ```
 
-This should open a login window.
+The login window will appear in the center of your screen.
 
 ---
 
-## How the app is organized
+## Login Credentials
 
-### Startup flow
+> [!WARNING]
+> The credentials below are for development and testing only. They will be removed before the final release.
 
-1. `src/main.py` creates the root `Window` and hides it (`withdraw`) so only the login UI is visible.
-2. `open_login_window(root)` is called.
-3. `open_login_window` creates a `Toplevel` window and builds the login layout.
-4. The Tk event loop starts via `window.mainloop()`.
+| Role | Username | Password |
+|---|---|---|
+| Admin | `1` | `1` |
+| Student | `2` | `2` |
 
-### UI notes
+---
 
-- The login screen uses a two-column layout:
-	- Left: a fixed-width dark panel with branding and an image.
-	- Right: the login form centered in the remaining space.
+## Project Structure
 
-- Logo path:
-	- `login.py` computes a `BASE_DIR` from its own file location and loads:
-		`assets/plv-logo.png`
-	- If you rename or move the image, update the path accordingly.
+```
+Student-Information-System/
+  assets/           # Icons and images used by the app
+  src/
+    main.py         # Entry point. Run this file to start the app.
+    constants.py    # Shared color and font constants
+    icon_utils.py   # Window icon helper
+    frontend/
+      login/
+        login.py    # Login screen
+      dashboard/
+        dashboard.py            # Student dashboard
+        admin_dashboard.py      # Admin dashboard and navigation
+        admin_dashboard_home.py # Admin overview with charts
+        admin_subjects.py       # Subject list and add form
+        admin_events.py         # Events list and add form
+        admin_announcements.py  # Announcements list and add form
+        settings.py             # Settings tab (student)
+        grade.py                # Grades tab
+        subjects.py             # Subjects tab
+        announcements.py        # Announcements tab
+        events.py               # Events tab
+```
 
 ---
 
 ## Troubleshooting
 
-### "ModuleNotFoundError: No module named 'ttkbootstrap'"
+**`ModuleNotFoundError: No module named 'ttkbootstrap'`**
 
-Install the dependency:
-
-```bash
-pip install ttkbootstrap
-```
-
-If you are using a virtual environment, ensure it is activated before running.
-
-### The app doesn’t open or closes immediately
-
-- Make sure you are running from the repository root using:
+You skipped Step 3. Run the install command and try again.
 
 ```bash
-python -m src.main
+pip install ttkbootstrap pillow fpdf
 ```
 
-- If you run `python src/main.py` directly, Python’s import paths may differ depending on your environment.
+**`ModuleNotFoundError: No module named 'constants'`**
 
-### "TclError" / Tkinter issues
+You are running the app from inside the `src/` folder. Go back to the project root and run it as `python src/main.py`, not `python main.py`.
 
-Tkinter is usually bundled with Python on Windows. If you have a minimal Python install without Tk support, reinstall Python and ensure **tcl/tk** components are included.
+**The app closes immediately after opening**
+
+Same as above. Make sure your terminal is in the project root, not inside `src/`.
+
+**Icons are not showing**
+
+The `assets/` folder must be present in the project root. If you deleted or moved it, the app will still run but icons will fall back to text characters. Restore the folder from the repository.
+
+**`pip` is not recognized**
+
+On some Windows installs, you need to use the full Python path:
+
+```bash
+C:/Users/YourName/AppData/Local/Programs/Python/Python311/python.exe -m pip install ttkbootstrap pillow fpdf
+```
+
+Replace `YourName` with your Windows username.
+
+**The PDF export button does nothing**
+
+Make sure `fpdf` is installed. Run `pip install fpdf` and restart the app.
 
 ---
 
-## Roadmap (planned features)
+## Project Info
 
-These are reasonable next steps for a Student Information System project:
-
-1. **Authentication**
-	 - Validate username/password
-	 - Display inline errors (using the existing error label widgets)
-	 - Implement "Remember me" behavior (local config file)
-
-2. **Student records**
-	 - Student list view (search/sort)
-	 - Student detail view
-	 - Add/edit/delete student records
-
-3. **Data persistence**
-	 - Start simple with JSON/CSV
-	 - Upgrade to SQLite for structured storage
-
-4. **Backend layer**
-	 - Move validation and data operations into `src/backend/`
-	 - Keep the frontend focused on UI rendering and events
-
----
-
-## Notes for submission
-
-If this project is being submitted for CC3 Intermediate Programming, consider including:
-
-- Short screen recording or screenshots of the running app
-- A short write-up describing:
-	- Architecture decisions
-	- Planned features
-	- Known limitations
-	- How to run and test
-
+CC3 Intermediate Programming Final Project, AY 2025-2026.
