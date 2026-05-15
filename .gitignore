@@ -1,5 +1,9 @@
 .idea
 .venv
+.agents
+.augment
+__pycache__/
+*.pyc
 *.db
 *.sqlite
 *.sqlite3
