@@ -14,6 +14,7 @@ from ttkbootstrap.toast import ToastNotification
 
 def open_login_window(window, conn):
     remember_var = IntVar()
+
     # ── Validation ────────────────────────────────────────────────────────────
     def user_validation(user):
         if len(user) <= 0:
@@ -139,7 +140,7 @@ def open_login_window(window, conn):
         font=(FONT_DEFAULT_NAME, 10),
         style=CUSTOM_LABEL_NAME,
     ).pack(pady=(6, 0))
-    
+
     # ── RIGHT PANEL (white) ───────────────────────────────────────────────────
 
     right_frame = Frame(win)

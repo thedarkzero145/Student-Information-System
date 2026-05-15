@@ -1,5 +1,6 @@
 import sqlite3
 
+
 # CREATE
 def add_student(conn, student_data):
     try:
@@ -16,6 +17,7 @@ def add_student(conn, student_data):
         return False
     except sqlite3.Error as e:
         print("Error:", e)
+
 
 def search_student(conn, student_id):
     try:
@@ -40,6 +42,7 @@ def search_student(conn, student_id):
                 return result
     except sqlite3.Error as e:
         print("Error:", e)
+
 
 def update_student(conn, student_id, data: dict):
     try:
